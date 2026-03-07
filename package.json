@@ -7,13 +7,14 @@
     "examples/*"
   ],
   "scripts": {
-    "compile": "bunx turbo run build",
     "changeset": "bunx changeset",
+    "compile": "bunx turbo run build",
     "dev": "bunx turbo run dev --parallel",
     "dev:dashboard": "bun run --cwd apps/dashboard dev",
     "dev:server": "bun run --cwd apps/server dev",
     "fmt": "oxfmt --write .",
     "fmt:check": "oxfmt --check .",
+    "install:clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules examples/*/node_modules && bun install",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "release": "bun run compile && bunx changeset publish",
