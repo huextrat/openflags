@@ -13,17 +13,17 @@ Use this file as context when working on OpenFlags. It summarizes the project, l
 ## Repository layout
 
 - **`apps/`** — Runnable applications  
-  - `server` — API + flag storage (REST, local evaluation)  
-  - `dashboard` — Admin UI to manage flags (planned or in progress)
+  - `server` — Fastify API on **Bun**, SQLite via `bun:sqlite`, GET/POST/PATCH /flags, environment + user targeting  
+  - `dashboard` — React + Vite admin UI to list flags and toggle enabled
 - **`packages/`** — Shared libraries  
-  - `sdk-js` — JavaScript/TypeScript SDK (`@openflags/js`)  
-  - `sdk-react` — React hooks (planned)  
-  - `types` — Shared TypeScript types (planned)
-- **`examples/`** — Sample apps (e.g. `react`, `nextjs`) (planned)
-- **`docs/`** — Documentation
+  - `sdk-js` — JavaScript/TypeScript SDK (`@openflags/js`): `createClient()` async, `isEnabled()` sync, `getAll()`  
+  - `sdk-react` — React hooks (`@openflags/react`): `OpenFlagsProvider`, `useFlag()`, `useFlags()`  
+  - `types` — Shared TypeScript types (`@openflags/types`): Flag, CreateFlagInput, UpdateFlagInput
+- **`examples/`** — Sample apps (e.g. `examples/react` — React + Vite using `@openflags/react`)
 - **`infra/`** — Deployment / infra as code
+- **`.changeset/`** — [Changesets](https://github.com/changesets/changesets) for versioning and changelogs. Use `bun run changeset` and `bun run version`.
 
-Root is a **pnpm** monorepo. Scripts are at the root unless noted.
+Root is a **Bun** monorepo (Bun for install, run, and server runtime). Scripts are at the root unless noted.
 
 ---
 
@@ -31,10 +31,12 @@ Root is a **pnpm** monorepo. Scripts are at the root unless noted.
 
 | Command | Purpose |
 |--------|---------|
-| `pnpm install` | Install all dependencies |
-| `pnpm dev` | Start dev workflow (definition may vary) |
-| `pnpm dev:server` | Run the API server |
-| `pnpm dev:dashboard` | Run the dashboard |
+| `bun install` | Install all dependencies |
+| `bun run dev` | Start dev workflow (turbo, parallel) |
+| `bun run dev:server` | Run the API server |
+| `bun run dev:dashboard` | Run the dashboard |
+| `bun run changeset` | Add a changeset for versioning |
+| `bun run version` | Apply changesets, bump versions, update changelogs |
 
 Default API base URL in examples: `http://localhost:4000`.
 
@@ -47,20 +49,20 @@ Default API base URL in examples: `http://localhost:4000`.
 - **Percentage rollouts** — Gradual rollout by percentage of users.
 - **Local evaluation** — SDK evaluates flags locally when possible (no round-trip for every check).
 
-SDK usage pattern: `createClient({ apiUrl, userId })` then `flags.isEnabled("flag_key")`.
+SDK usage: `const flags = await createClient({ apiUrl, userId, environment? })`; then `flags.isEnabled("flag_key")` (sync). User targeting: if `userId` is in `flag.users`, the flag is on for that user.
 
 ---
 
 ## Conventions for agents
 
 1. **Read README first** — User-facing behavior, quick start, and roadmap are in [README.md](./README.md). Don’t contradict it unless the user asks for a change.
-2. **Stack** — Prefer **TypeScript** for app and package code. Use **pnpm** for install/run. NPM package scope: **`@openflags/`** (e.g. `@openflags/js`).
+2. **Stack** — Prefer **TypeScript** for app and package code. Use **Bun** for install and run (`bun install`, `bun run <script>`). NPM package scope: **`@openflags/`** (e.g. `@openflags/js`).
 3. **Naming** — Flag keys: `snake_case`. Env names: `dev` / `staging` / `prod` unless the codebase uses different ones.
 4. **Where to put things**  
    - API and storage logic → `apps/server`  
    - Client SDK and evaluation → `packages/sdk-js` (and later `sdk-react`)  
    - Shared types → `packages/types` when it exists  
-   - Docs and specs → `docs/`
+   - Docs and specs → README and repo root
 5. **Roadmap** — v1: flags, rollouts, JS SDK, REST API, basic dashboard. v1.1: React hooks, caching, CLI. v2: user targeting, experimentation, analytics. Align new features with these phases when relevant.
 6. **Security** — No secrets or API keys in repo. Validate and sanitize inputs; keep SDK and server contract explicit.
 
@@ -71,6 +73,6 @@ SDK usage pattern: `createClient({ apiUrl, userId })` then `flags.isEnabled("fla
 - **“Add a flag / rollout / env”** → Server API + storage in `apps/server`, and SDK types/behavior in `packages/sdk-js` (and `packages/types` if present).
 - **“Dashboard / admin UI”** → `apps/dashboard`.
 - **“React / hooks”** → `packages/sdk-react` and examples in `examples/`.
-- **“Docs”** → `docs/` and README; keep README as the main entry point for humans.
+- **“Docs”** → README; keep README as the main entry point for humans.
 
 When in doubt, prefer consistency with existing code and README over introducing new patterns without being asked.

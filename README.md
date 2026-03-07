@@ -25,6 +25,8 @@
 
 **Works with:** Node.js · React · React Native · Next.js · Vite
 
+**Tooling:** This monorepo uses [Bun](https://bun.sh) for package management and running apps (server, dashboard, examples).
+
 ---
 
 ## 🚀 Features
@@ -42,28 +44,30 @@
 
 ## ⚡ Quick Start
 
-**1. Install dependencies**
+**1. Install [Bun](https://bun.sh)** (runtime + package manager)
+
+**2. Install dependencies**
 
 ```bash
-pnpm install
+bun install
 ```
 
-**2. Start development**
+**3. Start development**
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
-**3. Run server** (API + flag storage)
+**4. Run server** (API + flag storage)
 
 ```bash
-pnpm dev:server
+bun run dev:server
 ```
 
-**4. Run dashboard** (admin UI)
+**5. Run dashboard** (admin UI)
 
 ```bash
-pnpm dev:dashboard
+bun run dev:dashboard
 ```
 
 ---
@@ -126,8 +130,9 @@ packages/
 
 examples/
   react       # React app example
-  nextjs      # Next.js app example
 ```
+
+**Versioning:** [Changesets](https://github.com/changesets/changesets) — run `bun run changeset` when you change a package, then `bun run version` to update versions and changelogs.
 
 ---
 

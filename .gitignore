@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+build
+.turbo
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Database (local SQLite)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs
+*.log
+npm-debug.log*
+bun-debug.log*
+
+# Misc
+*.local
+.cache
