@@ -1,4 +1,5 @@
 import { useContext } from "react"
+
 import { OpenFlagsContext } from "./OpenFlagsContext"
 
 export function useFlag(flagKey: string): boolean {

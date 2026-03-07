@@ -1,6 +1,8 @@
 import type { Database } from "bun:sqlite"
+
 import type { CreateFlagInput, UpdateFlagInput } from "@openflags/types"
 import { nanoid } from "nanoid"
+
 import { rowToFlag, type FlagRow } from "./db.js"
 
 export async function handleFlags(
@@ -36,7 +38,14 @@ export async function handleFlags(
     try {
       db.run(
         "INSERT INTO flags (id, key, environment, enabled, rollout_percentage, users) VALUES (?, ?, ?, ?, ?, ?)",
-        [id, body.key.trim(), body.environment.trim(), enabled ? 1 : 0, rolloutPercentage, usersJson]
+        [
+          id,
+          body.key.trim(),
+          body.environment.trim(),
+          enabled ? 1 : 0,
+          rolloutPercentage,
+          usersJson,
+        ]
       )
     } catch (err: unknown) {
       const e = err as { code?: string }
@@ -62,12 +71,14 @@ export async function handleFlags(
       body.rolloutPercentage !== undefined
         ? Math.min(100, Math.max(0, body.rolloutPercentage))
         : row.rollout_percentage
-    const users = body.users !== undefined ? body.users : (row.users ? JSON.parse(row.users) : [])
+    const users = body.users !== undefined ? body.users : row.users ? JSON.parse(row.users) : []
     const usersJson = JSON.stringify(users)
-    db.run(
-      "UPDATE flags SET enabled = ?, rollout_percentage = ?, users = ? WHERE id = ?",
-      [enabled ? 1 : 0, rolloutPercentage, usersJson, id]
-    )
+    db.run("UPDATE flags SET enabled = ?, rollout_percentage = ?, users = ? WHERE id = ?", [
+      enabled ? 1 : 0,
+      rolloutPercentage,
+      usersJson,
+      id,
+    ])
     const updated = db.query("SELECT * FROM flags WHERE id = ?").get(id) as FlagRow
     return { body: rowToFlag(updated), status: 200 }
   }

@@ -37,7 +37,10 @@ const server = Bun.serve({
       } catch (err) {
         console.error(err)
         return jsonResponse(
-          { error: "Internal Server Error", message: err instanceof Error ? err.message : String(err) },
+          {
+            error: "Internal Server Error",
+            message: err instanceof Error ? err.message : String(err),
+          },
           500
         )
       }

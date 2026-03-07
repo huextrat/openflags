@@ -15,10 +15,10 @@
 
 ## ✨ Why OpenFlags?
 
-| Most platforms are… | OpenFlags is… |
-|---------------------|----------------|
-| 💸 Expensive         | 🆓 Self-hosted  |
-| 🔧 Complex to run   | ⚡ Lightweight  |
+| Most platforms are… | OpenFlags is…       |
+| ------------------- | ------------------- |
+| 💸 Expensive        | 🆓 Self-hosted      |
+| 🔧 Complex to run   | ⚡ Lightweight      |
 | 🖥️ Backend-heavy    | 📦 JavaScript-first |
 
 **Ideal for:** indie developers · startups · SaaS products · internal tools
@@ -110,11 +110,11 @@ if (flags.isEnabled("new_checkout")) {
 
 OpenFlags is built around three parts:
 
-| Component  | Role |
-|------------|------|
-| **Server**   | Flag storage and REST API |
-| **Dashboard**| Admin UI to create and manage flags |
-| **SDK**      | Client libraries for your apps (JS, React, etc.) |
+| Component     | Role                                             |
+| ------------- | ------------------------------------------------ |
+| **Server**    | Flag storage and REST API                        |
+| **Dashboard** | Admin UI to create and manage flags              |
+| **SDK**       | Client libraries for your apps (JS, React, etc.) |
 
 ### Monorepo layout
 
@@ -138,11 +138,11 @@ examples/
 
 ## 🗺️ Roadmap
 
-| Version | Scope |
-|---------|--------|
-| **v1**  | Feature flags · rollout percentage · JS SDK · REST API · basic dashboard |
-| **v1.1**| React hooks · caching · CLI |
-| **v2**  | User targeting · experimentation · analytics |
+| Version  | Scope                                                                    |
+| -------- | ------------------------------------------------------------------------ |
+| **v1**   | Feature flags · rollout percentage · JS SDK · REST API · basic dashboard |
+| **v1.1** | React hooks · caching · CLI                                              |
+| **v2**   | User targeting · experimentation · analytics                             |
 
 ---
 

@@ -1,22 +1,33 @@
 {
   "name": "openflags",
   "private": true,
-  "workspaces": ["apps/*", "packages/*", "examples/*"],
-  "packageManager": "bun@1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
     "build": "bunx turbo run build",
-    "dev": "bunx turbo run dev --parallel",
-    "dev:server": "bun run --cwd apps/server dev",
-    "dev:dashboard": "bun run --cwd apps/dashboard dev",
     "changeset": "bunx changeset",
+    "dev": "bunx turbo run dev --parallel",
+    "dev:dashboard": "bun run --cwd apps/dashboard dev",
+    "dev:server": "bun run --cwd apps/server dev",
+    "fmt": "oxfmt --write .",
+    "fmt:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "release": "bun run build && bunx changeset publish",
     "version": "bunx changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
+    "oxfmt": "^0.36.0",
+    "oxlint": "^1.51.0",
     "turbo": "^2.3.0",
     "typescript": "^5.6.0"
   },
   "engines": {
     "bun": ">=1.0.0"
-  }
+  },
+  "packageManager": "bun@1.0.0"
 }

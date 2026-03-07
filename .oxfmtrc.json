@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": ["**/dist/**", "**/build/**", ".turbo/**", "**/*.tsbuildinfo"],
+  "semi": false,
+  "sortImports": {
+    "groups": [
+      ["type-builtin"],
+      { "newlinesBetween": false },
+      ["value-builtin"],
+      ["type-external"],
+      { "newlinesBetween": false },
+      ["value-external"],
+      ["type-internal"],
+      { "newlinesBetween": false },
+      ["value-internal"],
+      ["type-parent", "type-sibling", "type-index"],
+      { "newlinesBetween": false },
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  },
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "trailingComma": "es5"
+}
