@@ -7,7 +7,7 @@
     "examples/*"
   ],
   "scripts": {
-    "build": "bunx turbo run build",
+    "compile": "bunx turbo run build",
     "changeset": "bunx changeset",
     "dev": "bunx turbo run dev --parallel",
     "dev:dashboard": "bun run --cwd apps/dashboard dev",
@@ -16,7 +16,8 @@
     "fmt:check": "oxfmt --check .",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
-    "release": "bun run build && bunx changeset publish",
+    "release": "bun run compile && bunx changeset publish",
+    "test": "bunx turbo run test",
     "version": "bunx changeset version"
   },
   "devDependencies": {

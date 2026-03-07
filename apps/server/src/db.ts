@@ -5,24 +5,31 @@ import { fileURLToPath } from "node:url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const FLAGS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS flags (
+    id TEXT PRIMARY KEY,
+    key TEXT NOT NULL,
+    environment TEXT NOT NULL,
+    enabled INTEGER NOT NULL DEFAULT 0,
+    rollout_percentage INTEGER NOT NULL DEFAULT 0,
+    users TEXT,
+    UNIQUE(key, environment)
+  )
+`
+
 export function initDb(): Database {
   const dataDir = path.join(__dirname, "..", "data")
   fs.mkdirSync(dataDir, { recursive: true })
   const dbPath = path.join(dataDir, "flags.db")
   const db = new Database(dbPath, { create: true })
+  db.run(FLAGS_SCHEMA)
+  return db
+}
 
-  db.run(`
-    CREATE TABLE IF NOT EXISTS flags (
-      id TEXT PRIMARY KEY,
-      key TEXT NOT NULL,
-      environment TEXT NOT NULL,
-      enabled INTEGER NOT NULL DEFAULT 0,
-      rollout_percentage INTEGER NOT NULL DEFAULT 0,
-      users TEXT,
-      UNIQUE(key, environment)
-    )
-  `)
-
+/** In-memory DB with same schema; for tests only. */
+export function createMemoryDb(): Database {
+  const db = new Database(":memory:")
+  db.run(FLAGS_SCHEMA)
   return db
 }
 

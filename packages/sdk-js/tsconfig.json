@@ -1,11 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "noEmit": false,
-    "declaration": true,
-    "lib": ["ES2022", "DOM"]
+    "noEmit": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["@types/bun"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tests/**/*"]
 }

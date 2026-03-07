@@ -35,6 +35,8 @@ Root is a **Bun** monorepo (Bun for install, run, and server runtime). Scripts a
 | `bun run dev`           | Start dev workflow (turbo, parallel)               |
 | `bun run dev:server`    | Run the API server                                 |
 | `bun run dev:dashboard` | Run the dashboard                                  |
+| `bun run test`          | Run all tests (server + sdk-js)                     |
+| `bun run compile`       | Build all packages (turbo); avoids conflict with `bun build` |
 | `bun run changeset`     | Add a changeset for versioning                     |
 | `bun run version`       | Apply changesets, bump versions, update changelogs |
 | `bun run lint`          | Lint with [Oxc](https://oxc.rs/) (oxlint)          |

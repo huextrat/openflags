@@ -48,8 +48,12 @@ export async function handleFlags(
         ]
       )
     } catch (err: unknown) {
-      const e = err as { code?: string }
-      if (e.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      const e = err as { code?: string; message?: string }
+      const isUniqueViolation =
+        e.code === "SQLITE_CONSTRAINT_UNIQUE" ||
+        (typeof e.message === "string" &&
+          (e.message.includes("UNIQUE") || e.message.includes("constraint failed")))
+      if (isUniqueViolation) {
         return { body: { error: "Flag with this key and environment already exists" }, status: 409 }
       }
       throw err
