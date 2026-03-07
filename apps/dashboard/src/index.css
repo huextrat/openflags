@@ -1,25 +1,58 @@
+@import "tailwindcss";
+
+/* Dark theme - premium SaaS (Stripe/Vercel/Supabase style) */
+:root {
+  --background: #111827; /* gray-900 */
+  --foreground: #f3f4f6; /* gray-100 */
+  --card: #1f2937; /* gray-800 */
+  --card-hover: #374151; /* gray-750-ish */
+  --muted: #6b7280; /* gray-400 */
+  --border: rgba(255 255 255 / 0.06);
+  --primary: #8b5cf6; /* violet-500 */
+  --primary-hover: #7c3aed; /* violet-600 */
+  --primary-foreground: #fff;
+  --destructive: #ef4444;
+  --ring: #8b5cf6;
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --glass: rgba(31 41 55 / 0.7);
+}
+
 body {
+  background: var(--background);
+  color: var(--foreground);
   margin: 0;
-  font-family: system-ui, sans-serif;
-  padding: 1rem;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-  max-width: 640px;
-}
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-th {
-  background: #f5f5f5;
+#root {
+  min-height: 100vh;
 }
 
-button {
+* {
+  border-color: var(--border);
+}
+
+/* Cursor pointer on all clickable elements */
+button:not(:disabled),
+a[href],
+[role="button"]:not([aria-disabled="true"]) {
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+}
+
+/* Scrollbar - subtle dark */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255 255 255 / 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255 255 255 / 0.15);
 }

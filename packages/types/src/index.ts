@@ -3,13 +3,11 @@ export interface Flag {
   key: string
   enabled: boolean
   rolloutPercentage: number
-  environment: string
   users?: string[]
 }
 
 export interface CreateFlagInput {
   key: string
-  environment: string
   enabled?: boolean
   rolloutPercentage?: number
   users?: string[]

@@ -5,8 +5,9 @@ Example React app using `@openflags/js` and `@openflags/react` to read feature f
 ## Run
 
 1. Start the OpenFlags server (from repo root: `bun run dev:server`, or see [server README](../../apps/server/README.md)).
-2. From this directory or repo root: `bun run dev` (Vite dev server).
-3. Open the URL shown (e.g. `http://localhost:5173`). The app will request flags from the server; configure the API URL in the app or env if needed.
+2. Create a project in the dashboard (e.g. slug `my-app`) and add flags. Set `VITE_OPENFLAGS_PROJECT` to that slug, or leave the default `my-app`.
+3. From this directory or repo root: `bun run dev` (Vite dev server).
+4. Open the URL shown (e.g. `http://localhost:5173`). The app fetches flags from `GET /projects/:project/flags`. Optionally set `VITE_API_URL` (default `http://localhost:4000`).
 
 ## Scripts
 

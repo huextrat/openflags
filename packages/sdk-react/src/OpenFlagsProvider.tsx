@@ -3,18 +3,13 @@ import { useEffect, useState } from "react"
 
 import { OpenFlagsContext, type OpenFlagsProviderProps } from "./OpenFlagsContext"
 
-export function OpenFlagsProvider({
-  apiUrl,
-  userId,
-  environment,
-  children,
-}: OpenFlagsProviderProps) {
+export function OpenFlagsProvider({ apiUrl, project, userId, children }: OpenFlagsProviderProps) {
   const [client, setClient] = useState<OpenFlagsClient | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    createClient({ apiUrl, userId, environment }).then(setClient).catch(setError)
-  }, [apiUrl, userId, environment])
+    createClient({ apiUrl, project, userId }).then(setClient).catch(setError)
+  }, [apiUrl, project, userId])
 
   if (error) {
     return (

@@ -10,6 +10,7 @@ const USERS_SCHEMA = `
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('admin', 'developer', 'member')),
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   )
 `
@@ -32,26 +33,15 @@ const PROJECTS_SCHEMA = `
   )
 `
 
-const PROJECT_MEMBERS_SCHEMA = `
-  CREATE TABLE IF NOT EXISTS project_members (
-    project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role TEXT NOT NULL CHECK (role IN ('admin', 'member', 'viewer')),
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    PRIMARY KEY (project_id, user_id)
-  )
-`
-
 const FLAGS_SCHEMA = `
   CREATE TABLE IF NOT EXISTS flags (
     id TEXT PRIMARY KEY,
     project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
     key TEXT NOT NULL,
-    environment TEXT NOT NULL,
     enabled INTEGER NOT NULL DEFAULT 0,
     rollout_percentage INTEGER NOT NULL DEFAULT 0,
     users TEXT,
-    UNIQUE(project_id, key, environment)
+    UNIQUE(project_id, key)
   )
 `
 
@@ -87,7 +77,6 @@ const MIGRATIONS: MigrationFn[] = [
     db.run(USERS_SCHEMA)
     db.run(SESSIONS_SCHEMA)
     db.run(PROJECTS_SCHEMA)
-    db.run(PROJECT_MEMBERS_SCHEMA)
     db.run(FLAGS_SCHEMA)
   },
 ]
@@ -111,7 +100,8 @@ export function initDb(): Database {
   const db = new Database(dbPath, { create: true })
 
   db.run(SCHEMA_VERSION_TABLE)
-  const hasVersionRow = (db.query("SELECT 1 FROM schema_version LIMIT 1").all() as unknown[]).length > 0
+  const hasVersionRow =
+    (db.query("SELECT 1 FROM schema_version LIMIT 1").all() as unknown[]).length > 0
   if (!hasVersionRow) {
     db.run("INSERT INTO schema_version (version) VALUES (0)")
   }
@@ -126,7 +116,6 @@ export function createMemoryDb(): Database {
   db.run(USERS_SCHEMA)
   db.run(SESSIONS_SCHEMA)
   db.run(PROJECTS_SCHEMA)
-  db.run(PROJECT_MEMBERS_SCHEMA)
   db.run(FLAGS_SCHEMA)
   return db
 }
@@ -135,6 +124,7 @@ export interface UserRow {
   id: string
   email: string
   password_hash: string
+  role: string
   created_at: string
 }
 
@@ -152,18 +142,10 @@ export interface ProjectRow {
   created_at: string
 }
 
-export interface ProjectMemberRow {
-  project_id: string
-  user_id: string
-  role: string
-  created_at: string
-}
-
 export interface FlagRow {
   id: string
   project_id: string
   key: string
-  environment: string
   enabled: number
   rollout_percentage: number
   users: string | null
@@ -174,13 +156,11 @@ export function rowToFlag(row: FlagRow): {
   key: string
   enabled: boolean
   rolloutPercentage: number
-  environment: string
   users?: string[]
 } {
   return {
     id: row.id,
     key: row.key,
-    environment: row.environment,
     enabled: row.enabled === 1,
     rolloutPercentage: row.rollout_percentage,
     ...(row.users ? { users: JSON.parse(row.users) as string[] } : {}),

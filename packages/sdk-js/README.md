@@ -13,6 +13,7 @@ import { createClient } from "@openflags/js"
 
 const client = await createClient({
   apiUrl: "https://flags.example.com",
+  project: "my-app", // project slug or id from the dashboard
   userId: "user-123",
   environment: "production", // optional, filters flags by environment
 })
@@ -26,11 +27,11 @@ const all = client.getAll() // { "new_checkout": true, "beta_ui": false }
 
 ## API
 
-- **createClient(config)** — Fetches flags from `GET {apiUrl}/flags` (or project-scoped endpoint when configured). Returns a client with:
+- **createClient(config)** — Fetches flags from `GET {apiUrl}/projects/:project/flags`. Returns a client with:
   - **isEnabled(flagKey)** — `true` if the flag is on for this user (respects rollout % and explicit user list).
   - **getAll()** — `Record<flagKey, boolean>` for all flags.
 
-Config: `apiUrl` (string), `userId` (string), `environment` (optional string). The server API is project-scoped (`GET /projects/:idOrSlug/flags`); the SDK will support a project option in a future update.
+Config: `apiUrl`, `project` (slug or id from the dashboard), `userId`, `environment` (optional).
 
 ## Scripts
 

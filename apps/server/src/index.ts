@@ -1,7 +1,8 @@
-import { initDb } from "./db.js"
 import * as auth from "./auth.js"
-import * as projects from "./projects.js"
+import { initDb } from "./db.js"
 import * as flagsProject from "./flagsProject.js"
+import * as projects from "./projects.js"
+import * as users from "./users.js"
 
 const port = Number(process.env.PORT) || 4000
 const db = initDb()
@@ -60,75 +61,93 @@ const server = Bun.serve({
       if (pathname === "/auth/me" && req.method === "GET") {
         const user = await auth.getSessionUser(db, req)
         if (!user) return jsonResponse({ error: "Unauthorized" }, 401)
-        return jsonResponse({ user: { id: user.id, email: user.email } }, 200)
+        return jsonResponse(
+          { user: { id: user.id, email: user.email, role: user.role ?? "member" } },
+          200
+        )
+      }
+
+      // ----- Global users (platform admin only) -----
+      if (pathname === "/users" && req.method === "GET") {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+        const result = await users.listUsers(db)
+        return jsonResponse(result.body, result.status)
+      }
+      if (pathname === "/users" && req.method === "POST") {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+        const body = (await req.json()) as { email?: string; role?: string }
+        const result = await users.inviteUser(db, authResult.user.id, body)
+        return jsonResponse(result.body, result.status)
+      }
+      const userIdMatch = pathname.match(/^\/users\/([^/]+)$/)
+      if (userIdMatch) {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+        const targetUserId = userIdMatch[1]
+        if (req.method === "PATCH") {
+          const body = (await req.json()) as { role?: string }
+          const result = await users.updateUserRole(db, authResult.user.id, targetUserId, body)
+          return jsonResponse(result.body, result.status)
+        }
+        if (req.method === "DELETE") {
+          const result = await users.removeUser(db, authResult.user.id, targetUserId)
+          return jsonResponse(result.body, result.status)
+        }
       }
 
       // ----- Projects (authenticated) -----
       if (pathname === "/projects" && req.method === "GET") {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
-        const list = await projects.getProjectsForUser(db, authResult.user.id)
+        const list = await projects.getAllProjects(db)
         return jsonResponse(list, 200)
       }
       if (pathname === "/projects" && req.method === "POST") {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+        if (!auth.requireCanCreateProject(db, authResult.user.id)) {
+          return jsonResponse({ error: "Forbidden" }, 403)
+        }
         const body = (await req.json()) as { name?: string; slug?: string }
         const result = await projects.createProject(db, authResult.user.id, body)
         return jsonResponse(result.body, result.status)
       }
 
       const projectIdMatch = pathname.match(/^\/projects\/([^/]+)$/)
-      if (projectIdMatch && req.method === "GET") {
+      if (projectIdMatch) {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
-        const result = await projects.getProject(db, projectIdMatch[1], authResult.user.id)
-        return jsonResponse(result.body, result.status)
-      }
-
-      // ----- Project members (authenticated, admin) -----
-      const membersMatch = pathname.match(/^\/projects\/([^/]+)\/members$/)
-      if (membersMatch) {
-        const authResult = await auth.requireAuth(db, req)
-        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
-        const projectId = membersMatch[1]
+        const projectId = projectIdMatch[1]
         if (req.method === "GET") {
-          const result = await projects.listMembers(db, projectId, authResult.user.id)
+          const result = await projects.getProject(db, projectId, authResult.user.id)
           return jsonResponse(result.body, result.status)
         }
-        if (req.method === "POST") {
-          const body = (await req.json()) as { email?: string; role?: string }
-          const result = await projects.inviteMember(db, projectId, authResult.user.id, body)
+        if (req.method === "DELETE") {
+          const result = await projects.deleteProject(db, projectId, authResult.user.id)
           return jsonResponse(result.body, result.status)
         }
-      }
-      const removeMemberMatch = pathname.match(/^\/projects\/([^/]+)\/members\/([^/]+)$/)
-      if (removeMemberMatch && req.method === "DELETE") {
-        const authResult = await auth.requireAuth(db, req)
-        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
-        const result = await projects.removeMember(
-          db,
-          removeMemberMatch[1],
-          authResult.user.id,
-          removeMemberMatch[2]
-        )
-        return jsonResponse(result.body, result.status)
       }
 
       // ----- Project flags: GET is public (SDK), POST/PATCH/DELETE require auth -----
       const flagsListMatch = pathname.match(/^\/projects\/([^/]+)\/flags$/)
       if (flagsListMatch) {
         const projectIdOrSlug = flagsListMatch[1]
-        const environment = url.searchParams.get("environment") ?? undefined
         if (req.method === "GET") {
-          const result = await flagsProject.handleFlagsList(db, projectIdOrSlug, environment)
+          const result = await flagsProject.handleFlagsList(db, projectIdOrSlug)
           return jsonResponse(result.body, result.status)
         }
         if (req.method === "POST") {
           const authResult = await auth.requireAuth(db, req)
           if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
           const body = (await req.json()) as import("@openflags/types").CreateFlagInput
-          const result = await flagsProject.handleFlagsCreate(db, projectIdOrSlug, authResult.user.id, body)
+          const result = await flagsProject.handleFlagsCreate(
+            db,
+            projectIdOrSlug,
+            authResult.user.id,
+            body
+          )
           return jsonResponse(result.body, result.status)
         }
       }
@@ -140,11 +159,22 @@ const server = Bun.serve({
         const flagId = flagDetailMatch[2]
         if (req.method === "PATCH") {
           const body = (await req.json()) as import("@openflags/types").UpdateFlagInput
-          const result = await flagsProject.handleFlagUpdate(db, projectId, flagId, authResult.user.id, body)
+          const result = await flagsProject.handleFlagUpdate(
+            db,
+            projectId,
+            flagId,
+            authResult.user.id,
+            body
+          )
           return jsonResponse(result.body, result.status)
         }
         if (req.method === "DELETE") {
-          const result = await flagsProject.handleFlagDelete(db, projectId, flagId, authResult.user.id)
+          const result = await flagsProject.handleFlagDelete(
+            db,
+            projectId,
+            flagId,
+            authResult.user.id
+          )
           return jsonResponse(result.body, result.status)
         }
       }

@@ -14,11 +14,7 @@ Wrap your app (or a subtree) with `OpenFlagsProvider`, then use hooks.
 import { OpenFlagsProvider, useFlag, useFlags } from "@openflags/react"
 
 // At root or a parent
-<OpenFlagsProvider
-  apiUrl="https://flags.example.com"
-  userId={user.id}
-  environment="production"
->
+;<OpenFlagsProvider apiUrl="https://flags.example.com" project="my-app" userId={user.id}>
   <App />
 </OpenFlagsProvider>
 
@@ -33,11 +29,11 @@ function Feature() {
 
 ## API
 
-- **OpenFlagsProvider** — Props: `apiUrl`, `userId`, `environment?`. Fetches flags once and provides them to children.
+- **OpenFlagsProvider** — Props: `apiUrl`, `userId`. Fetches flags once and provides them to children.
 - **useFlag(flagKey)** — Returns `boolean` for that flag.
 - **useFlags()** — Returns `Record<string, boolean>` for all flags.
 
-Requires a project-scoped server endpoint when the server is configured for projects; provider props may be extended with `project` (slug or id) in a future version.
+Props: `apiUrl`, `project` (slug or id), `userId`, `environment` (optional).
 
 ## Scripts
 

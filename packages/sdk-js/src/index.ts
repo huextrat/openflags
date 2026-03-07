@@ -1,9 +1,12 @@
 import type { Flag } from "@openflags/types"
 
 export interface OpenFlagsClientConfig {
+  /** Base URL of the OpenFlags server (e.g. https://flags.example.com) */
   apiUrl: string
+  /** Project slug or id (from the dashboard). Flags are scoped per project. */
+  project: string
+  /** User identifier for rollout and user targeting */
   userId: string
-  environment?: string
 }
 
 export interface OpenFlagsClient {
@@ -30,10 +33,9 @@ function isFlagEnabledForUser(flag: Flag, userId: string, flagKey: string): bool
 }
 
 export async function createClient(config: OpenFlagsClientConfig): Promise<OpenFlagsClient> {
-  const { apiUrl, userId, environment } = config
-  const url = new URL("/flags", apiUrl)
-  if (environment) url.searchParams.set("environment", environment)
-  const res = await fetch(url.toString())
+  const { apiUrl, project, userId } = config
+  const url = `${apiUrl}/projects/${encodeURIComponent(project)}/flags`
+  const res = await fetch(url)
   if (!res.ok) throw new Error(`Failed to fetch flags: ${res.status}`)
   const flags: Flag[] = await res.json()
 
