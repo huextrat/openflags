@@ -1,6 +1,6 @@
 import type { Database } from "bun:sqlite"
 
-import type { CreateFlagInput, UpdateFlagInput } from "@openflags/types"
+import type { CreateFlagInput, UpdateFlagInput } from "@openflagsdev/types"
 import { nanoid } from "nanoid"
 
 import * as auth from "./auth.js"

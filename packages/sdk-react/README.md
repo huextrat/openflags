@@ -1,17 +1,17 @@
-# @openflags/react
+# @openflagsdev/react
 
-React bindings for OpenFlags. Uses `@openflags/js` under the hood.
+React bindings for OpenFlags. Uses `@openflagsdev/js` under the hood.
 
 ## Install
 
-In the monorepo: depends on `@openflags/js` and `@openflags/types`. Peer: `react`. From outside, install `@openflags/react` and `react`.
+In the monorepo: depends on `@openflagsdev/js` and `@openflagsdev/types`. Peer: `react`. From outside, install `@openflagsdev/react` and `react`.
 
 ## Usage
 
 Wrap your app (or a subtree) with `OpenFlagsProvider`, then use hooks.
 
 ```tsx
-import { OpenFlagsProvider, useFlag, useFlags, useOpenFlagsClient } from "@openflags/react"
+import { OpenFlagsProvider, useFlag, useFlags, useOpenFlagsClient } from "@openflagsdev/react"
 
 // At root or a parent (userId optional; use identify() when the user logs in or changes)
 ;<OpenFlagsProvider apiUrl="https://flags.example.com" project="my-app">

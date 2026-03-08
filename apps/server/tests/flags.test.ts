@@ -72,7 +72,7 @@ describe("POST /projects/:id/flags", () => {
     const db = setupDb()
     const result = await flagsProject.handleFlagsCreate(db, PROJECT_ID, USER_ID, {
       enabled: true,
-    } as import("@openflags/types").CreateFlagInput)
+    } as import("@openflagsdev/types").CreateFlagInput)
     expect(result.status).toBe(400)
     expect(result.body).toEqual({ error: "key is required" })
   })

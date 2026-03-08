@@ -1,5 +1,5 @@
 {
-  "name": "@openflags/example-react",
+  "name": "@openflagsdev/example-react",
   "private": true,
   "description": "Example React app using OpenFlags (useFlag, useFlags, OpenFlagsProvider).",
   "keywords": [
@@ -23,8 +23,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@openflags/js": "workspace:*",
-    "@openflags/react": "workspace:*",
+    "@openflagsdev/js": "workspace:*",
+    "@openflagsdev/react": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

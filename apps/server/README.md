@@ -42,7 +42,7 @@ All JSON; auth uses cookie `openflags_session` (session ID).
 ### Flags (project-scoped)
 
 - `GET /projects/:idOrSlug/flags` — **Public** (no auth). List flags for SDK.
-- `POST /projects/:idOrSlug/flags` — Create flag (admin/member). Body: `CreateFlagInput` from `@openflags/types`.
+- `POST /projects/:idOrSlug/flags` — Create flag (admin/member). Body: `CreateFlagInput` from `@openflagsdev/types`.
 - `PATCH /projects/:id/flags/:flagId` — Update flag (admin/member). Body: `UpdateFlagInput`.
 - `DELETE /projects/:id/flags/:flagId` — Delete flag (admin/member).
 

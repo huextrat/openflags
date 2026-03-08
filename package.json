@@ -20,7 +20,7 @@
   "scripts": {
     "build": "bunx turbo run build",
     "changeset": "bunx changeset",
-    "dev": "bunx turbo run dev --filter=@openflags/dashboard --filter=@openflags/server --parallel",
+    "dev": "bunx turbo run dev --filter=@openflagsdev/dashboard --filter=@openflagsdev/server --parallel",
     "dev:all": "bunx turbo run dev --parallel",
     "dev:dashboard": "bun run --cwd apps/dashboard dev",
     "dev:docs": "bun run --cwd apps/docs dev",

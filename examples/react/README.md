@@ -1,6 +1,6 @@
 # OpenFlags React example
 
-Example React app using `@openflags/js` and `@openflags/react` to read feature flags from an OpenFlags server.
+Example React app using `@openflagsdev/js` and `@openflagsdev/react` to read feature flags from an OpenFlags server.
 
 ## Run
 

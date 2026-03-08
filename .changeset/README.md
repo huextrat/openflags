@@ -4,7 +4,7 @@ This repo uses [Changesets](https://github.com/changesets/changesets) for versio
 
 ## Adding a changeset
 
-When you change a package under `packages/` (e.g. `@openflags/js`, `@openflags/react`, `@openflags/types`), you must add a changeset:
+When you change a package under `packages/` (e.g. `@openflagsdev/js`, `@openflagsdev/react`, `@openflagsdev/types`), you must add a changeset:
 
 ```bash
 bun run changeset
@@ -27,4 +27,4 @@ To release manually: `bun run version` then `bun run release` (build + publish).
 
 ## Ignored packages
 
-`@openflags/example-react` is in `ignore` in `.changeset/config.json` (example app, not published). Add or remove packages there as needed.
+`@openflagsdev/example-react` is in `ignore` in `.changeset/config.json` (example app, not published). Add or remove packages there as needed.

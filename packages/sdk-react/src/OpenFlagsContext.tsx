@@ -1,4 +1,4 @@
-import type { OpenFlagsClient } from "@openflags/js"
+import type { OpenFlagsClient } from "@openflagsdev/js"
 import { createContext, type ReactNode } from "react"
 
 export interface OpenFlagsProviderProps {

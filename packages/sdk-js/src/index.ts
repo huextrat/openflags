@@ -1,4 +1,4 @@
-import type { Flag } from "@openflags/types"
+import type { Flag } from "@openflagsdev/types"
 
 export interface OpenFlagsClientConfig {
   /** Base URL of the OpenFlags server (e.g. https://flags.example.com) */

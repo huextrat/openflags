@@ -1,4 +1,4 @@
-import { createClient, type OpenFlagsClient } from "@openflags/js"
+import { createClient, type OpenFlagsClient } from "@openflagsdev/js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { OpenFlagsContext, type OpenFlagsProviderProps } from "./OpenFlagsContext"

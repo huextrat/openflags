@@ -203,7 +203,7 @@ const server = Bun.serve({
         if (req.method === "POST") {
           const authResult = await auth.requireAuth(db, req)
           if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
-          const body = (await req.json()) as import("@openflags/types").CreateFlagInput
+          const body = (await req.json()) as import("@openflagsdev/types").CreateFlagInput
           const result = await flagsProject.handleFlagsCreate(
             db,
             projectIdOrSlug,
@@ -220,7 +220,7 @@ const server = Bun.serve({
         const projectId = flagDetailMatch[1]
         const flagId = flagDetailMatch[2]
         if (req.method === "PATCH") {
-          const body = (await req.json()) as import("@openflags/types").UpdateFlagInput
+          const body = (await req.json()) as import("@openflagsdev/types").UpdateFlagInput
           const result = await flagsProject.handleFlagUpdate(
             db,
             projectId,

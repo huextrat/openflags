@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { Flag } from "@openflags/types"
+import type { Flag } from "@openflagsdev/types"
 
 import { createClient } from "../src/index.js"
 

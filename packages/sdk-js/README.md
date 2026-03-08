@@ -1,15 +1,15 @@
-# @openflags/js
+# @openflagsdev/js
 
 JavaScript/TypeScript SDK for OpenFlags. Fetches flags from the server and evaluates them locally (enabled, rollout percentage, user list).
 
 ## Install
 
-In the monorepo: dependency on `@openflags/types`. From outside, install `@openflags/js` (when published).
+In the monorepo: dependency on `@openflagsdev/types`. From outside, install `@openflagsdev/js` (when published).
 
 ## Usage
 
 ```ts
-import { createClient } from "@openflags/js"
+import { createClient } from "@openflagsdev/js"
 
 const client = await createClient({
   apiUrl: "https://flags.example.com",
@@ -44,4 +44,4 @@ Config: `apiUrl`, `project` (slug or id from the dashboard), `userId` (optional)
 
 ## Types
 
-Flag shapes and evaluation rules come from `@openflags/types`.
+Flag shapes and evaluation rules come from `@openflagsdev/types`.

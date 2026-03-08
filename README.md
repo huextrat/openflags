@@ -93,7 +93,7 @@ _This starts the Dashboard on `localhost:5173` and the API/Server on `localhost:
 ### JavaScript / TypeScript
 
 ```ts
-import { createClient } from "@openflags/js"
+import { createClient } from "@openflagsdev/js"
 
 const flags = await createClient({
   apiUrl: "http://localhost:4000",
@@ -112,7 +112,7 @@ if (flags.isEnabled("new_checkout")) {
 Wrap your application with the provider, and use the hook anywhere.
 
 ```tsx
-import { OpenFlagsProvider, useFlag } from "@openflags/react"
+import { OpenFlagsProvider, useFlag } from "@openflagsdev/react"
 
 // 1. Setup Provider
 root.render(
@@ -139,13 +139,13 @@ function App() {
 
 OpenFlags is structured beautifully as a Turborepo.
 
-| Package          | Path                 | Description                         |
-| ---------------- | -------------------- | ----------------------------------- |
-| **Server**       | `apps/server`        | `Bun.serve` + SQLite API            |
-| **Dashboard**    | `apps/dashboard`     | React SPA for Flag Management       |
-| **Docs Vitrine** | `apps/docs`          | Next.js Landing + Fumadocs          |
-| **React**        | `packages/sdk-react` | `@openflags/react` Provider & Hooks |
-| **JS**           | `packages/sdk-js`    | Core string-hashing evaluation      |
+| Package          | Path                 | Description                            |
+| ---------------- | -------------------- | -------------------------------------- |
+| **Server**       | `apps/server`        | `Bun.serve` + SQLite API               |
+| **Dashboard**    | `apps/dashboard`     | React SPA for Flag Management          |
+| **Docs Vitrine** | `apps/docs`          | Next.js Landing + Fumadocs             |
+| **React**        | `packages/sdk-react` | `@openflagsdev/react` Provider & Hooks |
+| **JS**           | `packages/sdk-js`    | Core string-hashing evaluation         |
 
 ---
 

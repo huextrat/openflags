@@ -1,7 +1,6 @@
 {
-  "name": "@openflags/react",
-  "version": "0.0.1",
-  "private": true,
+  "name": "@openflagsdev/react",
+  "version": "0.1.0",
   "description": "React hooks and provider for OpenFlags — useFlag, useFlags, OpenFlagsProvider.",
   "keywords": [
     "feature-flags",
@@ -33,8 +32,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@openflags/js": "workspace:*",
-    "@openflags/types": "workspace:*"
+    "@openflagsdev/js": "workspace:*",
+    "@openflagsdev/types": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",

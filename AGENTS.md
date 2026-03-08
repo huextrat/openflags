@@ -16,10 +16,10 @@ Use this file as context when working on OpenFlags. It summarizes the project, l
   - `server` — Fastify API on **Bun**, SQLite via `bun:sqlite`, GET/POST/PATCH /flags, user targeting
   - `dashboard` — React + Vite admin UI to list flags and toggle enabled
 - **`packages/`** — Shared libraries
-  - `sdk-js` — JavaScript/TypeScript SDK (`@openflags/js`): `createClient()` async, `isEnabled()` sync, `getAll()`
-  - `sdk-react` — React hooks (`@openflags/react`): `OpenFlagsProvider`, `useFlag()`, `useFlags()`
-  - `types` — Shared TypeScript types (`@openflags/types`): Flag, CreateFlagInput, UpdateFlagInput
-- **`examples/`** — Sample apps (e.g. `examples/react` — React + Vite using `@openflags/react`)
+  - `sdk-js` — JavaScript/TypeScript SDK (`@openflagsdev/js`): `createClient()` async, `isEnabled()` sync, `getAll()`
+  - `sdk-react` — React hooks (`@openflagsdev/react`): `OpenFlagsProvider`, `useFlag()`, `useFlags()`
+  - `types` — Shared TypeScript types (`@openflagsdev/types`): Flag, CreateFlagInput, UpdateFlagInput
+- **`examples/`** — Sample apps (e.g. `examples/react` — React + Vite using `@openflagsdev/react`)
 - **`infra/`** — Deployment / infra as code
 - **`.changeset/`** — [Changesets](https://github.com/changesets/changesets) for versioning and changelogs. Use `bun run changeset` and `bun run version`.
 
@@ -61,7 +61,7 @@ SDK usage: `const flags = await createClient({ apiUrl, project, userId?, refresh
 ## Conventions for agents
 
 1. **Read README first** — User-facing behavior and quick start are in [README.md](./README.md). Don’t contradict it unless the user asks for a change.
-2. **Stack** — Prefer **TypeScript** for app and package code. Use **Bun** for install and run (`bun install`, `bun run <script>`). NPM package scope: **`@openflags/`** (e.g. `@openflags/js`).
+2. **Stack** — Prefer **TypeScript** for app and package code. Use **Bun** for install and run (`bun install`, `bun run <script>`). NPM package scope: **`@openflagsdev/`** (e.g. `@openflagsdev/js`).
 3. **Naming** — Flag keys: `snake_case`.
 4. **Where to put things**
    - API and storage logic → `apps/server`

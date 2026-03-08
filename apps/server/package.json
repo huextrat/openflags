@@ -1,6 +1,6 @@
 {
-  "name": "@openflags/server",
-  "version": "0.0.1",
+  "name": "@openflagsdev/server",
+  "version": "0.0.2",
   "private": true,
   "description": "OpenFlags API server — REST API and SQLite storage for feature flags.",
   "keywords": [
@@ -30,7 +30,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@openflags/types": "workspace:*",
+    "@openflagsdev/types": "workspace:*",
     "nanoid": "^5.0.9"
   },
   "devDependencies": {

@@ -5,12 +5,12 @@ description: Wrap your app with the provider and read flags through hooks.
 
 # React SDK
 
-The `@openflags/react` package builds on the core client and gives React applications an idiomatic hook-based API.
+The `@openflagsdev/react` package builds on the core client and gives React applications an idiomatic hook-based API.
 
 ## Provider setup
 
 ```tsx
-import { OpenFlagsProvider } from "@openflags/react"
+import { OpenFlagsProvider } from "@openflagsdev/react"
 
 root.render(
   <OpenFlagsProvider
@@ -27,7 +27,7 @@ root.render(
 ## Read a single flag
 
 ```tsx
-import { useFlag } from "@openflags/react"
+import { useFlag } from "@openflagsdev/react"
 
 export function Checkout() {
   const newCheckout = useFlag("new_checkout")
