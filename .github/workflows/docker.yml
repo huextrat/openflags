@@ -16,13 +16,14 @@
 name: 🐳 Docker
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   docker:
     name: 🐳 Build & Push
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
