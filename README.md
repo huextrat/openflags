@@ -105,21 +105,19 @@ if (flags.isEnabled("new_checkout")) {
 
 ### React
 
-Wrap your app with `OpenFlagsProvider`, then use `useFlag` or `useFlags` in your components:
+Wrap your app with `OpenFlagsProvider` (it creates the client from `apiUrl` and `project`), then use `useFlag` or `useFlags` in your components:
 
 ```tsx
-import { createClient } from "@openflags/js"
 import { OpenFlagsProvider, useFlag } from "@openflags/react"
 
 // At app root (e.g. main.tsx)
-const flagsClient = await createClient({
-  apiUrl: "http://localhost:4000",
-  project: "my-app",
-  userId: user?.id,
-})
-
 root.render(
-  <OpenFlagsProvider client={flagsClient}>
+  <OpenFlagsProvider
+    apiUrl="http://localhost:4000"
+    project="my-app"
+    userId={user?.id}
+    refreshIntervalMs={60_000}
+  >
     <App />
   </OpenFlagsProvider>
 )
