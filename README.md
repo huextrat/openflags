@@ -34,6 +34,7 @@
 - **Feature flags** — Toggle features without deploys
 - **Percentage rollouts** — Gradual releases
 - **Local evaluation** — No extra latency
+- **Caching & refresh** — Optional TTL refresh and manual `refresh()` to stay in sync
 - **REST API** — Full control from any stack
 - **JavaScript SDK** — TypeScript-ready
 - **React hooks** — First-class React support
@@ -82,6 +83,7 @@ const flags = await createClient({
   apiUrl: "http://localhost:4000",
   project: "my-app",
   userId: "user_123",
+  refreshIntervalMs: 60_000, // optional: refetch every 60s
 })
 
 if (flags.isEnabled("new_checkout")) {

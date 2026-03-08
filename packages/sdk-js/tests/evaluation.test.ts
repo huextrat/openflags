@@ -124,3 +124,42 @@ describe("identify", () => {
     expect(client.isEnabled("targeted")).toBe(false)
   })
 })
+
+describe("refresh", () => {
+  test("refresh() fetches new flags and updates evaluation", async () => {
+    let callCount = 0
+    globalThis.fetch = (() => {
+      callCount++
+      const payload =
+        callCount === 1
+          ? [{ id: "1", key: "f", enabled: true, rolloutPercentage: 100 }]
+          : [{ id: "1", key: "f", enabled: false, rolloutPercentage: 0 }]
+      return Promise.resolve(
+        new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } })
+      )
+    }) as unknown as typeof fetch
+
+    const client = await createClient({ apiUrl: "http://localhost", project: "test", userId: "u1" })
+    expect(client.isEnabled("f")).toBe(true)
+
+    await client.refresh()
+    expect(client.isEnabled("f")).toBe(false)
+  })
+})
+
+describe("refreshIntervalMs", () => {
+  test("createClient with refreshIntervalMs succeeds and returns client with refresh", async () => {
+    const flags: Flag[] = [{ id: "1", key: "x", enabled: true, rolloutPercentage: 100 }]
+    globalThis.fetch = mockFetch(flags) as unknown as typeof fetch
+    const client = await createClient({
+      apiUrl: "http://localhost",
+      project: "test",
+      refreshIntervalMs: 60_000,
+    })
+    expect(client.isEnabled("x")).toBe(true)
+    expect(typeof client.refresh).toBe("function")
+    if ("destroy" in client && typeof client.destroy === "function") {
+      client.destroy()
+    }
+  })
+})

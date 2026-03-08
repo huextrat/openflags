@@ -54,7 +54,7 @@ Default API base URL in examples: `http://localhost:4000`.
 - **Percentage rollouts** — Gradual rollout by percentage of users.
 - **Local evaluation** — SDK evaluates flags locally when possible (no round-trip for every check).
 
-SDK usage: `const flags = await createClient({ apiUrl, project, userId? })`; then `flags.isEnabled("flag_key")` (sync). User targeting: if `userId` is in `flag.users`, the flag is on for that user.
+SDK usage: `const flags = await createClient({ apiUrl, project, userId?, refreshIntervalMs? })`; then `flags.isEnabled("flag_key")` (sync). Call `flags.refresh()` to refetch. User targeting: if `userId` is in `flag.users`, the flag is on for that user.
 
 ---
 

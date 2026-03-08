@@ -7,6 +7,11 @@ export interface OpenFlagsClientConfig {
   project: string
   /** Optional user identifier. Call identify(userId) when the user logs in or changes. */
   userId?: string
+  /**
+   * Optional interval in ms to refetch flags in the background. Omit or 0 = no auto-refresh.
+   * Use with refresh() for manual refresh (e.g. after login or on window focus).
+   */
+  refreshIntervalMs?: number
 }
 
 export interface OpenFlagsClient {
@@ -15,6 +20,8 @@ export interface OpenFlagsClient {
   getAll(): Record<string, boolean>
   /** Set or update the current user (e.g. after login). Pass null to clear (e.g. logout). */
   identify(userId: string | null): void
+  /** Refetch flags from the server. Resolves when the new flags are in place. */
+  refresh(): Promise<void>
 }
 
 function hashToPercent(str: string): number {
@@ -35,23 +42,36 @@ function isFlagEnabledForUser(flag: Flag, userId: string, flagKey: string): bool
 }
 
 export async function createClient(config: OpenFlagsClientConfig): Promise<OpenFlagsClient> {
-  const { apiUrl, project, userId: initialUserId } = config
+  const { apiUrl, project, userId: initialUserId, refreshIntervalMs } = config
   const url = `${apiUrl}/projects/${encodeURIComponent(project)}/flags`
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`Failed to fetch flags: ${res.status}`)
-  const flags: Flag[] = await res.json()
 
+  async function fetchFlags(): Promise<Flag[]> {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Failed to fetch flags: ${res.status}`)
+    return res.json()
+  }
+
+  const flagsRef: { current: Flag[] } = { current: await fetchFlags() }
   let currentUserId: string = initialUserId ?? ""
 
-  return {
+  let intervalId: ReturnType<typeof setInterval> | undefined
+  if (refreshIntervalMs != null && refreshIntervalMs > 0) {
+    intervalId = setInterval(() => {
+      void fetchFlags().then((flags) => {
+        flagsRef.current = flags
+      })
+    }, refreshIntervalMs)
+  }
+
+  const client: OpenFlagsClient & { destroy?: () => void } = {
     isEnabled(flagKey: string): boolean {
-      const flag = flags.find((f) => f.key === flagKey)
+      const flag = flagsRef.current.find((f) => f.key === flagKey)
       if (!flag) return false
       return isFlagEnabledForUser(flag, currentUserId, flagKey)
     },
     getAll(): Record<string, boolean> {
       const out: Record<string, boolean> = {}
-      for (const flag of flags) {
+      for (const flag of flagsRef.current) {
         out[flag.key] = isFlagEnabledForUser(flag, currentUserId, flag.key)
       }
       return out
@@ -59,5 +79,14 @@ export async function createClient(config: OpenFlagsClientConfig): Promise<OpenF
     identify(userId: string | null): void {
       currentUserId = userId ?? ""
     },
+    async refresh(): Promise<void> {
+      flagsRef.current = await fetchFlags()
+    },
   }
+
+  if (intervalId !== undefined) {
+    client.destroy = () => clearInterval(intervalId)
+  }
+
+  return client
 }
