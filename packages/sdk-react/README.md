@@ -11,10 +11,10 @@ In the monorepo: depends on `@openflags/js` and `@openflags/types`. Peer: `react
 Wrap your app (or a subtree) with `OpenFlagsProvider`, then use hooks.
 
 ```tsx
-import { OpenFlagsProvider, useFlag, useFlags } from "@openflags/react"
+import { OpenFlagsProvider, useFlag, useFlags, useOpenFlagsClient } from "@openflags/react"
 
-// At root or a parent
-;<OpenFlagsProvider apiUrl="https://flags.example.com" project="my-app" userId={user.id}>
+// At root or a parent (userId optional; use identify() when the user logs in or changes)
+;<OpenFlagsProvider apiUrl="https://flags.example.com" project="my-app">
   <App />
 </OpenFlagsProvider>
 
@@ -25,15 +25,25 @@ function Feature() {
   if (enabled) return <NewCheckout />
   return <OldCheckout />
 }
+
+// When the user logs in or logs out
+function Auth() {
+  const openFlags = useOpenFlagsClient()
+  function onLogin(userId: string) {
+    openFlags?.identify(userId)
+  }
+  function onLogout() {
+    openFlags?.identify(null)
+  }
+}
 ```
 
 ## API
 
-- **OpenFlagsProvider** — Props: `apiUrl`, `userId`. Fetches flags once and provides them to children.
+- **OpenFlagsProvider** — Props: `apiUrl`, `project`, optional `userId`. Fetches flags once; syncs `userId` prop and exposes `identify()`.
 - **useFlag(flagKey)** — Returns `boolean` for that flag.
 - **useFlags()** — Returns `Record<string, boolean>` for all flags.
-
-Props: `apiUrl`, `project` (slug or id), `userId`, `environment` (optional).
+- **useOpenFlagsClient()** — Returns `{ client, identify }` or `null`. Call `identify(userId)` when the user logs in or changes, `identify(null)` on logout.
 
 ## Scripts
 

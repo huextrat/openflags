@@ -1,4 +1,4 @@
-import { OpenFlagsProvider, useFlag, useFlags } from "@openflags/react"
+import { OpenFlagsProvider, useFlag, useFlags, useOpenFlagsClient } from "@openflags/react"
 import { useState } from "react"
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000"
@@ -6,9 +6,61 @@ const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000"
 function Demo() {
   const newCheckout = useFlag("new_checkout")
   const flags = useFlags()
+  const openFlags = useOpenFlagsClient()
 
   return (
     <div>
+      {openFlags && (
+        <div style={{ marginBottom: "1rem" }}>
+          <label style={{ display: "block", marginBottom: "0.25rem", fontWeight: 500 }}>
+            identify(userId) — simule login / logout
+          </label>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              onClick={() => openFlags.identify("user-1")}
+              style={{
+                padding: "0.35rem 0.75rem",
+                background: "#4f46e5",
+                color: "white",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
+              user-1
+            </button>
+            <button
+              type="button"
+              onClick={() => openFlags.identify("user-2")}
+              style={{
+                padding: "0.35rem 0.75rem",
+                background: "#4f46e5",
+                color: "white",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
+              user-2
+            </button>
+            <button
+              type="button"
+              onClick={() => openFlags.identify(null)}
+              style={{
+                padding: "0.35rem 0.75rem",
+                background: "#6b7280",
+                color: "white",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
+              Déconnexion (anonymous)
+            </button>
+          </div>
+        </div>
+      )}
       <p>
         <strong>useFlag("new_checkout"):</strong> {newCheckout ? "On" : "Off"}
       </p>
@@ -77,9 +129,10 @@ function App() {
       </form>
 
       {submittedProject ? (
-        <OpenFlagsProvider apiUrl={API_URL} project={submittedProject} userId="user-1">
+        <OpenFlagsProvider apiUrl={API_URL} project={submittedProject}>
           <p style={{ color: "#666", marginBottom: "0.5rem" }}>
-            Flags pour le projet <strong>{submittedProject}</strong>
+            Flags pour le projet <strong>{submittedProject}</strong> (userId optionnel, utilise
+            identify pour changer)
           </p>
           <Demo />
         </OpenFlagsProvider>

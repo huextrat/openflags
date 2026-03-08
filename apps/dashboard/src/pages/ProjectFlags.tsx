@@ -21,20 +21,29 @@ import { Switch } from "@/components/ui/switch"
 import { TextFieldRoot, TextFieldLabel, TextFieldInput } from "@/components/ui/text-field"
 import { useAuth } from "@/context/AuthContext"
 
+function parseUsersInput(input: string): string[] {
+  return input
+    .split(/[\n,]/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
 export default function ProjectFlags() {
   const { projectId } = useParams<{ projectId: string }>()
   const { user } = useAuth()
   const [flags, setFlags] = useState<FlagType[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [form, setForm] = useState<CreateFlagInput>({
+  const [form, setForm] = useState<CreateFlagInput & { usersInput: string }>({
     key: "",
     enabled: false,
     rolloutPercentage: 0,
+    usersInput: "",
   })
   const [editFlag, setEditFlag] = useState<FlagType | null>(null)
   const [editRollout, setEditRollout] = useState(0)
   const [editEnabled, setEditEnabled] = useState(false)
+  const [editUsersInput, setEditUsersInput] = useState("")
   const [error, setError] = useState<string | null>(null)
 
   const canEditFlags = user?.role === "admin" || user?.role === "developer"
@@ -58,14 +67,16 @@ export default function ProjectFlags() {
     if (!projectId) return
     setError(null)
     try {
+      const users = parseUsersInput(form.usersInput)
       const flag = await api.createFlag(projectId, {
         key: form.key,
         enabled: form.enabled,
         rolloutPercentage: form.rolloutPercentage ?? 0,
+        ...(users.length > 0 && { users }),
       })
       setFlags((prev) => [...prev, flag])
       setDialogOpen(false)
-      setForm({ key: "", enabled: false, rolloutPercentage: 0 })
+      setForm({ key: "", enabled: false, rolloutPercentage: 0, usersInput: "" })
       toast.success("Flag created")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create flag")
@@ -97,6 +108,7 @@ export default function ProjectFlags() {
     setEditFlag(flag)
     setEditRollout(flag.rolloutPercentage)
     setEditEnabled(flag.enabled)
+    setEditUsersInput((flag.users ?? []).join("\n"))
     setError(null)
   }
 
@@ -105,9 +117,11 @@ export default function ProjectFlags() {
     if (!projectId || !editFlag) return
     setError(null)
     try {
+      const users = parseUsersInput(editUsersInput)
       const updated = await api.updateFlag(projectId, editFlag.id, {
         enabled: editEnabled,
         rolloutPercentage: editRollout,
+        users,
       })
       setFlags((prev) => prev.map((f) => (f.id === updated.id ? updated : f)))
       setEditFlag(null)
@@ -174,7 +188,7 @@ export default function ProjectFlags() {
                   </TextFieldRoot>
                   <p className="text-xs text-gray-500">e.g. new_feature, dark_mode</p>
                 </div>
-                <div className="space-y-4 rounded-xl border border-white/5 bg-white/5 p-4">
+                <div className="space-y-2 rounded-xl border border-white/5 bg-white/5 p-4">
                   <p className="text-sm font-medium text-gray-400">Default state</p>
                   <div className="flex items-center gap-3">
                     <Switch
@@ -202,6 +216,20 @@ export default function ProjectFlags() {
                       </span>
                     </div>
                   </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="create-users">Targeted user IDs (optional)</Label>
+                  <textarea
+                    id="create-users"
+                    value={form.usersInput}
+                    onChange={(e) => setForm((p) => ({ ...p, usersInput: e.target.value }))}
+                    placeholder="e.g. user-1, user-2"
+                    rows={3}
+                    className="mt-2 w-full rounded-xl border border-white/10 bg-gray-800 px-4 py-2 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  />
+                  <p className="text-xs text-gray-500">
+                    These users always have the flag on (ignores rollout).
+                  </p>
                 </div>
                 <DialogFooter>
                   <Button type="button" variant="secondary" onClick={() => setDialogOpen(false)}>
@@ -247,6 +275,9 @@ export default function ProjectFlags() {
                   <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     Rollout %
                   </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Targeted users
+                  </th>
                   {canEditFlags && (
                     <th className="px-6 py-4 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                       Actions
@@ -290,6 +321,15 @@ export default function ProjectFlags() {
                         </>
                       ) : (
                         <span className="text-sm text-gray-400">{flag.rolloutPercentage}%</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      {flag.users && flag.users.length > 0 ? (
+                        <span className="text-sm text-gray-400" title={flag.users.join(", ")}>
+                          {flag.users.length} user{flag.users.length !== 1 ? "s" : ""}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-gray-500">—</span>
                       )}
                     </td>
                     {canEditFlags && (
@@ -344,7 +384,7 @@ export default function ProjectFlags() {
               </div>
               <div className="space-y-4">
                 <Label>Rollout %</Label>
-                <div className="space-y-2">
+                <div className="space-y-2 mt-2">
                   <Slider
                     value={[editRollout]}
                     onValueChange={(v) => setEditRollout(v[0] ?? 0)}
@@ -353,6 +393,18 @@ export default function ProjectFlags() {
                   />
                   <p className="text-xs text-gray-500">{editRollout}%</p>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-users">Targeted user IDs</Label>
+                <textarea
+                  id="edit-users"
+                  value={editUsersInput}
+                  onChange={(e) => setEditUsersInput(e.target.value)}
+                  placeholder="e.g. user-1, user-2"
+                  rows={3}
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-gray-800 px-4 py-2 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                />
+                <p className="text-xs text-gray-500">These users always have the flag on.</p>
               </div>
               <DialogFooter>
                 <Button type="button" variant="secondary" onClick={() => setEditFlag(null)}>

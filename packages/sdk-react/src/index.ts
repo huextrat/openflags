@@ -1,4 +1,5 @@
 export { OpenFlagsProvider } from "./OpenFlagsProvider"
-export type { OpenFlagsProviderProps } from "./OpenFlagsContext"
+export type { OpenFlagsContextValue, OpenFlagsProviderProps } from "./OpenFlagsContext"
 export { useFlag } from "./useFlag"
 export { useFlags } from "./useFlags"
+export { useOpenFlagsClient } from "./useOpenFlagsClient"

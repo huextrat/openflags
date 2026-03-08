@@ -6,9 +6,15 @@ export interface OpenFlagsProviderProps {
   apiUrl: string
   /** Project slug or id (flags are scoped per project) */
   project: string
-  /** User identifier for rollout and targeting */
-  userId: string
+  /** Optional user identifier. Use identify(userId) when the user logs in or changes. */
+  userId?: string
   children: ReactNode
 }
 
-export const OpenFlagsContext = createContext<OpenFlagsClient | null>(null)
+export interface OpenFlagsContextValue {
+  client: OpenFlagsClient
+  /** Set or clear the current user (e.g. after login/logout). Causes components to re-render with new flag values. */
+  identify: (userId: string | null) => void
+}
+
+export const OpenFlagsContext = createContext<OpenFlagsContextValue | null>(null)

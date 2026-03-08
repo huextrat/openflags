@@ -103,3 +103,24 @@ describe("createClient + getAll", () => {
     expect(Object.keys(all)).toHaveLength(2)
   })
 })
+
+describe("identify", () => {
+  test("updates evaluation when identify is called", async () => {
+    const flags: Flag[] = [
+      {
+        id: "1",
+        key: "targeted",
+        enabled: true,
+        rolloutPercentage: 0,
+        users: ["u1", "u2"],
+      },
+    ]
+    globalThis.fetch = mockFetch(flags) as unknown as typeof fetch
+    const client = await createClient({ apiUrl: "http://localhost", project: "test" })
+    expect(client.isEnabled("targeted")).toBe(false)
+    client.identify("u1")
+    expect(client.isEnabled("targeted")).toBe(true)
+    client.identify(null)
+    expect(client.isEnabled("targeted")).toBe(false)
+  })
+})

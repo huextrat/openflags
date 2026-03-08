@@ -5,14 +5,16 @@ export interface OpenFlagsClientConfig {
   apiUrl: string
   /** Project slug or id (from the dashboard). Flags are scoped per project. */
   project: string
-  /** User identifier for rollout and user targeting */
-  userId: string
+  /** Optional user identifier. Call identify(userId) when the user logs in or changes. */
+  userId?: string
 }
 
 export interface OpenFlagsClient {
   isEnabled(flagKey: string): boolean
   /** All flag keys and their enabled state (for useFlags()) */
   getAll(): Record<string, boolean>
+  /** Set or update the current user (e.g. after login). Pass null to clear (e.g. logout). */
+  identify(userId: string | null): void
 }
 
 function hashToPercent(str: string): number {
@@ -33,24 +35,29 @@ function isFlagEnabledForUser(flag: Flag, userId: string, flagKey: string): bool
 }
 
 export async function createClient(config: OpenFlagsClientConfig): Promise<OpenFlagsClient> {
-  const { apiUrl, project, userId } = config
+  const { apiUrl, project, userId: initialUserId } = config
   const url = `${apiUrl}/projects/${encodeURIComponent(project)}/flags`
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Failed to fetch flags: ${res.status}`)
   const flags: Flag[] = await res.json()
 
+  let currentUserId: string = initialUserId ?? ""
+
   return {
     isEnabled(flagKey: string): boolean {
       const flag = flags.find((f) => f.key === flagKey)
       if (!flag) return false
-      return isFlagEnabledForUser(flag, userId, flagKey)
+      return isFlagEnabledForUser(flag, currentUserId, flagKey)
     },
     getAll(): Record<string, boolean> {
       const out: Record<string, boolean> = {}
       for (const flag of flags) {
-        out[flag.key] = isFlagEnabledForUser(flag, userId, flag.key)
+        out[flag.key] = isFlagEnabledForUser(flag, currentUserId, flag.key)
       }
       return out
+    },
+    identify(userId: string | null): void {
+      currentUserId = userId ?? ""
     },
   }
 }
