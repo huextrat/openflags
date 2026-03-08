@@ -1,6 +1,12 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["**/dist/**", "**/build/**", ".turbo/**", "**/*.tsbuildinfo"],
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/build/**",
+    ".turbo/**",
+    "**/*.tsbuildinfo",
+    "**/next-env.d.ts"
+  ],
   "semi": false,
   "sortImports": {
     "groups": [

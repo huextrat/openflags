@@ -118,24 +118,24 @@ export default function HomePage() {
           </nav>
         </motion.header>
 
-        <div className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
+        <div className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] w-full">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="relative"
+            className="relative min-w-0 w-full"
           >
             <motion.div
               variants={fadeUp}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-1.5 text-[13px] font-medium text-violet-200 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.1)]"
+              className="mb-6 inline-flex max-w-full items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-3 sm:px-4 py-1 sm:py-1.5 text-[11px] sm:text-[13px] font-medium text-violet-200 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.1)]"
             >
-              <Sparkles className="h-4 w-4" />
-              Open source, self-hosted, built for safety
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+              <span className="truncate">Open source, self-hosted, built for safety</span>
             </motion.div>
 
             <motion.h1
               variants={fadeUp}
-              className="max-w-4xl text-5xl leading-[1.15] font-semibold tracking-tight text-white sm:text-[4rem]"
+              className="max-w-4xl w-full text-4xl leading-[1.15] font-semibold tracking-tight text-white sm:text-5xl lg:text-[4rem] break-words text-balance"
             >
               Feature flags that feel{" "}
               <span className="bg-gradient-to-r from-cyan-400 via-violet-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(139,92,246,0.3)]">
@@ -146,24 +146,27 @@ export default function HomePage() {
 
             <motion.p
               variants={fadeUp}
-              className="mt-8 max-w-2xl text-[17px] leading-8 text-white/60 font-medium"
+              className="mt-6 sm:mt-8 max-w-2xl w-full text-[15px] sm:text-[17px] leading-7 sm:leading-8 text-white/60 font-medium break-words"
             >
               OpenFlags gives you progressive delivery, local evaluation, and a simple control plane
               without the enterprise tax. Launch faster, de-risk releases, and keep ownership in
               your stack.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-4">
+            <motion.div
+              variants={fadeUp}
+              className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4"
+            >
               <Link
                 href="/docs"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-black transition-all hover:bg-cyan-50 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-black transition-all hover:bg-cyan-50 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"
               >
                 Read the docs
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="https://github.com/huextrat/openflags"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20 backdrop-blur-md"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20 backdrop-blur-md"
               >
                 Explore GitHub
               </Link>
@@ -201,11 +204,11 @@ export default function HomePage() {
             initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative"
+            className="relative min-w-0 w-full"
           >
             <div className="absolute inset-[-10%] rounded-[3rem] bg-gradient-to-tr from-violet-500/20 to-cyan-500/20 blur-3xl opacity-50" />
-            <div className="relative rounded-[2rem] border border-white/10 bg-[#09090b]/60 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(139,92,246,0.15)] backdrop-blur-3xl">
-              <div className="flex items-center justify-between border-b border-white/5 pb-5">
+            <div className="relative rounded-[2rem] border border-white/10 bg-[#09090b]/60 p-4 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(139,92,246,0.15)] backdrop-blur-3xl overflow-hidden w-full">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-white/5 pb-4 sm:pb-5 gap-3 sm:gap-0">
                 <div>
                   <p className="text-[15px] font-semibold text-white">Progressive delivery</p>
                   <p className="text-[13px] font-medium text-white/40 mt-1">
@@ -222,9 +225,9 @@ export default function HomePage() {
               <div className="space-y-4 py-6">
                 <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 shadow-inner relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="mb-5 flex items-center justify-between relative z-10">
+                  <div className="mb-5 flex flex-col sm:flex-row items-start sm:items-center justify-between relative z-10 gap-3 sm:gap-0">
                     <div className="flex items-center gap-3.5">
-                      <div className="rounded-xl bg-cyan-500/10 border border-cyan-500/20 p-2.5 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                      <div className="rounded-xl bg-cyan-500/10 border border-cyan-500/20 p-2 sm:p-2.5 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
                         <GitBranch className="h-5 w-5" />
                       </div>
                       <div>
@@ -322,7 +325,7 @@ if (flags.isEnabled("new_checkout")) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] p-10 backdrop-blur-2xl shadow-2xl relative overflow-hidden group"
+          className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] p-6 sm:p-10 backdrop-blur-2xl shadow-2xl relative overflow-hidden group"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
           <div className="inline-flex rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
@@ -349,7 +352,7 @@ if (flags.isEnabled("new_checkout")) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="rounded-[2.5rem] border border-violet-500/20 bg-gradient-to-br from-[#09090b]/80 to-violet-950/20 p-10 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.1)] relative overflow-hidden"
+          className="rounded-[2.5rem] border border-violet-500/20 bg-gradient-to-br from-[#09090b]/80 to-violet-950/20 p-6 sm:p-10 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.1)] relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,0.15),transparent_50%)]" />
           <div className="inline-flex rounded-full border border-violet-400/30 bg-violet-500/15 px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-violet-200 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
@@ -377,7 +380,7 @@ if (flags.isEnabled("new_checkout")) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="grid gap-8 rounded-[3rem] border border-white/10 bg-white/[0.02] p-8 lg:grid-cols-[0.85fr_1.15fr] lg:p-10 backdrop-blur-2xl shadow-2xl relative overflow-hidden"
+          className="grid gap-8 rounded-[3rem] border border-white/10 bg-white/[0.02] p-6 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:p-10 backdrop-blur-2xl shadow-2xl relative overflow-hidden"
         >
           <div className="absolute top-0 right-1/4 w-[300px] h-[300px] bg-cyan-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
 
@@ -424,7 +427,7 @@ if (flags.isEnabled("new_checkout")) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rounded-[3rem] border border-violet-500/30 bg-gradient-to-br from-[#09090b] via-violet-950/20 to-cyan-950/20 p-10 text-center lg:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(139,92,246,0.15)]"
+          className="rounded-[3rem] border border-violet-500/30 bg-gradient-to-br from-[#09090b] via-violet-950/20 to-cyan-950/20 p-6 sm:p-10 text-center lg:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(139,92,246,0.15)]"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.1),transparent_70%)]" />
 

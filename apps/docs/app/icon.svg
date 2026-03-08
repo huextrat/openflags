@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+
+  <!-- Fond très sombre mais pas totalement noir, bords très très arrondis -->
+  <rect width="256" height="256" rx="64" fill="#09090b" />
+  
+  <!-- Le contour de l'interrupteur (Toggle) allumé avec le dégradé OpenFlags -->
+  <rect x="40" y="80" width="176" height="96" rx="48" fill="url(#accent)" />
+  
+  <!-- Le bouton blanc du Toggle positionné sur "ON" (à droite) -->
+  <circle cx="168" cy="128" r="32" fill="#ffffff" />
+</svg>
