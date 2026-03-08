@@ -1,14 +1,25 @@
 {
   "name": "openflags",
   "private": true,
+  "description": "Open source, self-hosted feature flags for modern JavaScript applications.",
+  "homepage": "https://github.com/huextrat/openflags#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git"
+  },
   "workspaces": [
     "apps/*",
     "packages/*",
     "examples/*"
   ],
   "scripts": {
+    "build": "bunx turbo run build",
     "changeset": "bunx changeset",
-    "compile": "bunx turbo run build",
     "dev": "bunx turbo run dev --parallel",
     "dev:dashboard": "bun run --cwd apps/dashboard dev",
     "dev:server": "bun run --cwd apps/server dev",

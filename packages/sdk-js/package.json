@@ -2,6 +2,26 @@
   "name": "@openflags/js",
   "version": "0.0.1",
   "private": true,
+  "description": "JavaScript/TypeScript SDK for OpenFlags — feature flags with local evaluation.",
+  "keywords": [
+    "feature-flags",
+    "javascript",
+    "launchdarkly",
+    "openflags",
+    "sdk",
+    "typescript"
+  ],
+  "homepage": "https://github.com/huextrat/openflags/tree/main/packages/sdk-js#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "packages/sdk-js"
+  },
   "files": [
     "dist"
   ],

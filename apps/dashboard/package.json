@@ -2,6 +2,25 @@
   "name": "@openflags/dashboard",
   "version": "0.0.1",
   "private": true,
+  "description": "OpenFlags admin UI — manage projects and feature flags.",
+  "keywords": [
+    "admin",
+    "dashboard",
+    "feature-flags",
+    "openflags",
+    "react"
+  ],
+  "homepage": "https://github.com/huextrat/openflags#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "apps/dashboard"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",

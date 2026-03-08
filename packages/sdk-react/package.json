@@ -2,6 +2,26 @@
   "name": "@openflags/react",
   "version": "0.0.1",
   "private": true,
+  "description": "React hooks and provider for OpenFlags — useFlag, useFlags, OpenFlagsProvider.",
+  "keywords": [
+    "feature-flags",
+    "hooks",
+    "openflags",
+    "provider",
+    "react",
+    "useflag"
+  ],
+  "homepage": "https://github.com/huextrat/openflags/tree/main/packages/sdk-react#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "packages/sdk-react"
+  },
   "files": [
     "dist"
   ],

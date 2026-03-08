@@ -2,6 +2,26 @@
   "name": "@openflags/server",
   "version": "0.0.1",
   "private": true,
+  "description": "OpenFlags API server — REST API and SQLite storage for feature flags.",
+  "keywords": [
+    "api",
+    "bun",
+    "feature-flags",
+    "openflags",
+    "server",
+    "sqlite"
+  ],
+  "homepage": "https://github.com/huextrat/openflags#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "apps/server"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",

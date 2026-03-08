@@ -2,6 +2,24 @@
   "name": "@openflags/types",
   "version": "0.0.1",
   "private": true,
+  "description": "Shared TypeScript types for OpenFlags (Flag, CreateFlagInput, UpdateFlagInput).",
+  "keywords": [
+    "feature-flags",
+    "openflags",
+    "types",
+    "typescript"
+  ],
+  "homepage": "https://github.com/huextrat/openflags/tree/main/packages/types#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "packages/types"
+  },
   "files": [
     "dist"
   ],

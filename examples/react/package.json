@@ -1,6 +1,21 @@
 {
   "name": "@openflags/example-react",
   "private": true,
+  "description": "Example React app using OpenFlags (useFlag, useFlags, OpenFlagsProvider).",
+  "keywords": [
+    "example",
+    "openflags",
+    "react",
+    "vite"
+  ],
+  "homepage": "https://github.com/huextrat/openflags#readme",
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "examples/react"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
