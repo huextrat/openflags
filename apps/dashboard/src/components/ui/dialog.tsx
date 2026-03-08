@@ -42,10 +42,8 @@ const DialogContent = React.forwardRef<
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-violet-600/10 blur-[80px] pointer-events-none mix-blend-screen" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/10 blur-[80px] pointer-events-none mix-blend-screen" />
-      
-      <div className="relative z-10 w-full h-full text-left">
-        {children}
-      </div>
+
+      <div className="relative z-10 w-full h-full text-left">{children}</div>
 
       {showClose && (
         <DialogPrimitive.Close asChild>
@@ -95,7 +93,10 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex flex-col-reverse gap-3 mt-4 sm:flex-row sm:justify-end sm:space-x-2 pt-6", className)}
+    className={cn(
+      "flex flex-col-reverse gap-3 mt-4 sm:flex-row sm:justify-end sm:space-x-2 pt-6",
+      className
+    )}
     {...props}
   />
 )

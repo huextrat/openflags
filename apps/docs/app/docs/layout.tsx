@@ -10,7 +10,9 @@ function Logo() {
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-white/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)] group-hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-shadow duration-300">
         <Flag className="h-4 w-4 text-violet-300" />
       </div>
-      <span className="tracking-tight text-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">OpenFlags</span>
+      <span className="tracking-tight text-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+        OpenFlags
+      </span>
     </div>
   )
 }
@@ -34,4 +36,3 @@ export default function DocsRootLayout({ children }: { children: ReactNode }) {
     </DocsLayout>
   )
 }
-

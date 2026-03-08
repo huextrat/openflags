@@ -9,12 +9,12 @@ import { api } from "@/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog"
 import { TextFieldRoot, TextFieldLabel, TextFieldInput } from "@/components/ui/text-field"
 import { useAuth } from "@/context/AuthContext"
@@ -53,8 +53,8 @@ export default function Projects() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-           <h2 className="text-3xl font-bold tracking-tight text-white mb-1">Projects</h2>
-           <p className="text-white/50 text-sm">Manage your feature flags environments.</p>
+          <h2 className="text-3xl font-bold tracking-tight text-white mb-1">Projects</h2>
+          <p className="text-white/50 text-sm">Manage your feature flags environments.</p>
         </div>
         {canCreateProject && (
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -106,7 +106,12 @@ export default function Projects() {
                   />
                 </TextFieldRoot>
                 <DialogFooter className="mt-6 pt-6 border-t border-white/5">
-                  <Button type="button" variant="ghost" onClick={() => setDialogOpen(false)} className="bg-transparent hover:bg-white/5">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setDialogOpen(false)}
+                    className="bg-transparent hover:bg-white/5"
+                  >
                     Cancel
                   </Button>
                   <Button type="submit">Create Project</Button>
@@ -118,15 +123,15 @@ export default function Projects() {
       </div>
 
       {projects.length === 0 ? (
-         <motion.div
-           initial={{ opacity: 0, scale: 0.95 }}
-           animate={{ opacity: 1, scale: 1 }}
-           transition={{ duration: 0.4, ease: "easeOut" }}
-         >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
           <Card className="text-center overflow-hidden relative border-dashed border-white/20 bg-transparent">
             {/* Ambient glow behind empty state */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-violet-600/10 rounded-full blur-[80px] pointer-events-none" />
-            
+
             <CardContent className="pt-12 pb-12 relative z-10 flex flex-col items-center">
               <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 text-violet-300 shadow-inner mb-6 border border-white/10">
                 <FolderOpen className="h-8 w-8" />
@@ -159,18 +164,20 @@ export default function Projects() {
                 <Card className="h-full flex flex-col transition-all duration-300 bg-gradient-to-b from-white/[0.03] to-white/[0.01] hover:from-white/[0.05] hover:to-white/[0.02] border-white/5 hover:border-violet-500/30 group-focus-visible:ring-2 group-focus-visible:ring-violet-500/50 p-6 relative overflow-hidden group-hover:shadow-[0_8px_30px_rgb(139,92,246,0.12)]">
                   {/* Subtle top glare effect that turns violet on hover */}
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 group-hover:via-violet-500/50 to-transparent transition-all duration-500" />
-                  
+
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-white/5 border border-white/10 group-hover:bg-violet-500/10 group-hover:border-violet-500/20 group-hover:text-violet-300 transition-colors shadow-inner">
                       <FolderOpen className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div className="h-8 w-8 rounded-full flex items-center justify-center opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 bg-white/5 border border-white/10 text-white">
-                       <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
-                  
+
                   <div className="min-w-0 flex-1 mt-auto">
-                    <p className="text-lg font-semibold text-white tracking-tight leading-tight mb-1">{p.name}</p>
+                    <p className="text-lg font-semibold text-white tracking-tight leading-tight mb-1">
+                      {p.name}
+                    </p>
                     <p className="text-sm font-mono text-white/40 truncate">{p.slug}</p>
                   </div>
                 </Card>

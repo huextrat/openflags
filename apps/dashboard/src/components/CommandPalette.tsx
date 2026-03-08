@@ -1,7 +1,7 @@
+import { motion, AnimatePresence } from "framer-motion"
 import { Command, Flag, PlusCircle, Settings, LogOut, LayoutDashboard, Users } from "lucide-react"
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
 
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useAuth } from "@/context/AuthContext"
@@ -134,7 +134,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
         className="max-w-xl p-0 gap-0 overflow-hidden bg-[#09090b]/80 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_20px_rgba(139,92,246,0.1)] sm:rounded-[24px]"
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
-        
+
         <div className="relative flex items-center gap-3 border-b border-white/10 px-5 py-4 z-10">
           <Command className="h-5 w-5 shrink-0 text-white/50" />
           <input
@@ -145,7 +145,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
             className="flex-1 border-0 bg-transparent text-lg text-white placeholder:text-white/40 focus:outline-none focus:ring-0 px-0"
           />
         </div>
-        
+
         <div className="relative max-h-[min(50vh,350px)] overflow-y-auto px-2 py-3 z-10 scrollbar-hide">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
@@ -156,7 +156,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
             <ul className="space-y-1">
               <AnimatePresence>
                 {items.map((item, i) => (
-                  <motion.li 
+                  <motion.li
                     key={item.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -173,23 +173,27 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
                       )}
                     >
                       {i === selectedIndex && (
-                        <motion.div 
+                        <motion.div
                           layoutId="command-palette-active-item"
                           className="absolute inset-0 bg-white/5 border border-white/10 rounded-xl"
                           initial={false}
                           transition={{ type: "spring", stiffness: 400, damping: 30 }}
                         />
                       )}
-                      
-                      <div className={cn(
-                        "relative z-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors border",
-                        i === selectedIndex ? "bg-white/10 border-white/20" : "bg-white/5 border-transparent group-hover:bg-white/10 group-hover:border-white/10"
-                      )}>
+
+                      <div
+                        className={cn(
+                          "relative z-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors border",
+                          i === selectedIndex
+                            ? "bg-white/10 border-white/20"
+                            : "bg-white/5 border-transparent group-hover:bg-white/10 group-hover:border-white/10"
+                        )}
+                      >
                         {item.icon}
                       </div>
-                      
+
                       <span className="relative z-10 truncate">{item.label}</span>
-                      
+
                       {i === selectedIndex && (
                         <div className="relative z-10 ml-auto flex items-center gap-1">
                           <span className="text-xs text-white/40">Press</span>
@@ -205,19 +209,27 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
             </ul>
           )}
         </div>
-        
+
         <div className="relative border-t border-white/5 bg-black/20 px-4 py-3 text-xs text-white/40 flex items-center gap-4 z-10 rounded-b-[24px]">
           <span className="flex items-center gap-1.5">
-            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">↑</kbd>
-            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">↓</kbd>
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">
+              ↑
+            </kbd>
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">
+              ↓
+            </kbd>
             <span>navigate</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">↵</kbd>
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">
+              ↵
+            </kbd>
             <span>select</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-2 font-sans shadow-sm ring-1 ring-white/10">esc</kbd>
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-2 font-sans shadow-sm ring-1 ring-white/10">
+              esc
+            </kbd>
             <span>close</span>
           </span>
         </div>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock"
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/layouts/docs/page"
 import defaultMdxComponents from "fumadocs-ui/mdx"
-import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock"
+import { notFound } from "next/navigation"
 
 import { source } from "@/lib/source"
 
@@ -35,14 +35,16 @@ export default async function DocPage({ params }: DocPageProps) {
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDXContent components={{ 
-          ...defaultMdxComponents,
-          pre: ({ ref: _ref, ...props }: any) => (
-            <CodeBlock {...props}>
-              <Pre>{props.children}</Pre>
-            </CodeBlock>
-          )
-        }} />
+        <MDXContent
+          components={{
+            ...defaultMdxComponents,
+            pre: ({ ref: _ref, ...props }: any) => (
+              <CodeBlock {...props}>
+                <Pre>{props.children}</Pre>
+              </CodeBlock>
+            ),
+          }}
+        />
       </DocsBody>
     </DocsPage>
   )

@@ -1,7 +1,7 @@
 "use client"
 
-import Link from "next/link"
 import { motion } from "framer-motion"
+import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock"
 import {
   ArrowRight,
   BarChart3,
@@ -14,13 +14,14 @@ import {
   Sparkles,
   Users,
 } from "lucide-react"
-import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock"
+import Link from "next/link"
 
 const featurePillars = [
   {
     icon: Rocket,
     title: "Ship faster",
-    description: "Release progressively with percentage rollouts and targeted activation, instead of all-or-nothing launches.",
+    description:
+      "Release progressively with percentage rollouts and targeted activation, instead of all-or-nothing launches.",
   },
   {
     icon: Gauge,
@@ -30,7 +31,8 @@ const featurePillars = [
   {
     icon: ShieldCheck,
     title: "Self-hosted control",
-    description: "Keep your flags, audit surface, and runtime ownership inside your own infrastructure.",
+    description:
+      "Keep your flags, audit surface, and runtime ownership inside your own infrastructure.",
   },
 ]
 
@@ -58,15 +60,15 @@ const stats = [
 // Animation variants
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
 }
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
+    transition: { staggerChildren: 0.1 },
+  },
 }
 
 export default function HomePage() {
@@ -77,8 +79,7 @@ export default function HomePage() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-600/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 
       <section className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 pb-12 pt-6 sm:px-10 lg:px-12 z-10">
-        
-        <motion.header 
+        <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -89,8 +90,12 @@ export default function HomePage() {
               <FlagLogo />
             </div>
             <div>
-              <p className="text-[13px] font-bold tracking-[0.24em] bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 uppercase">OpenFlags</p>
-              <p className="text-[11px] text-white/50 tracking-wide font-medium">Feature flags for modern teams</p>
+              <p className="text-[13px] font-bold tracking-[0.24em] bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 uppercase">
+                OpenFlags
+              </p>
+              <p className="text-[11px] text-white/50 tracking-wide font-medium">
+                Feature flags for modern teams
+              </p>
             </div>
           </div>
 
@@ -98,36 +103,54 @@ export default function HomePage() {
             <Link href="/docs" className="transition-colors hover:text-white">
               Documentation
             </Link>
-            <Link href="https://github.com/huextrat/openflags" className="transition-colors hover:text-white">
+            <Link
+              href="https://github.com/huextrat/openflags"
+              className="transition-colors hover:text-white"
+            >
               GitHub
             </Link>
-            <Link href="/docs" className="flex items-center justify-center rounded-full bg-white/10 px-4 py-1.5 text-white transition-all hover:bg-white/20 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] border border-white/10">
+            <Link
+              href="/docs"
+              className="flex items-center justify-center rounded-full bg-white/10 px-4 py-1.5 text-white transition-all hover:bg-white/20 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] border border-white/10"
+            >
               Get Started
             </Link>
           </nav>
         </motion.header>
 
         <div className="grid flex-1 items-center gap-10 py-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-          <motion.div 
+          <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
             className="relative"
           >
-            <motion.div variants={fadeUp} className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-1.5 text-[13px] font-medium text-violet-200 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.1)]">
+            <motion.div
+              variants={fadeUp}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-1.5 text-[13px] font-medium text-violet-200 backdrop-blur-md shadow-[0_0_15px_rgba(139,92,246,0.1)]"
+            >
               <Sparkles className="h-4 w-4" />
               Open source, self-hosted, built for safety
             </motion.div>
 
-            <motion.h1 variants={fadeUp} className="max-w-4xl text-5xl leading-[1.15] font-semibold tracking-tight text-white sm:text-[4rem]">
+            <motion.h1
+              variants={fadeUp}
+              className="max-w-4xl text-5xl leading-[1.15] font-semibold tracking-tight text-white sm:text-[4rem]"
+            >
               Feature flags that feel{" "}
-              <span className="bg-gradient-to-r from-cyan-400 via-violet-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(139,92,246,0.3)]">lightweight</span>{" "}
+              <span className="bg-gradient-to-r from-cyan-400 via-violet-300 to-violet-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+                lightweight
+              </span>{" "}
               for engineers and trustworthy for product teams.
             </motion.h1>
 
-            <motion.p variants={fadeUp} className="mt-8 max-w-2xl text-[17px] leading-8 text-white/60 font-medium">
-              OpenFlags gives you progressive delivery, local evaluation, and a simple control plane without the enterprise
-              tax. Launch faster, de-risk releases, and keep ownership in your stack.
+            <motion.p
+              variants={fadeUp}
+              className="mt-8 max-w-2xl text-[17px] leading-8 text-white/60 font-medium"
+            >
+              OpenFlags gives you progressive delivery, local evaluation, and a simple control plane
+              without the enterprise tax. Launch faster, de-risk releases, and keep ownership in
+              your stack.
             </motion.p>
 
             <motion.div variants={fadeUp} className="mt-10 flex flex-wrap gap-4">
@@ -146,19 +169,24 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            <motion.div variants={fadeUp} className="mt-16 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <motion.div
+              variants={fadeUp}
+              className="mt-16 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+            >
               {stats.map((stat) => (
-                <div 
-                  key={stat.label} 
+                <div
+                  key={stat.label}
                   className="relative group rounded-2xl border border-white/5 bg-[#09090b]/40 p-5 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-violet-500/30 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-violet-500/0 via-transparent to-cyan-500/0 opacity-0 group-hover:from-violet-500/10 group-hover:to-cyan-500/10 group-hover:opacity-100 transition-all duration-500" />
                   <div className="absolute -inset-px rounded-2xl border border-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 [mask-image:linear-gradient(to_bottom,white,transparent)]" />
-                  
+
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="h-6 w-1 shrink-0 rounded-full bg-gradient-to-b from-violet-400 to-cyan-400 opacity-50 group-hover:opacity-100 transition-opacity" />
-                      <p className="text-[11px] font-bold tracking-[0.2em] text-white/50 uppercase break-words">{stat.label}</p>
+                      <p className="text-[11px] font-bold tracking-[0.2em] text-white/50 uppercase break-words">
+                        {stat.label}
+                      </p>
                     </div>
                     <p className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 group-hover:from-white group-hover:to-cyan-200 transition-all duration-300">
                       {stat.value}
@@ -169,7 +197,7 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.2 }}
@@ -180,7 +208,9 @@ export default function HomePage() {
               <div className="flex items-center justify-between border-b border-white/5 pb-5">
                 <div>
                   <p className="text-[15px] font-semibold text-white">Progressive delivery</p>
-                  <p className="text-[13px] font-medium text-white/40 mt-1">A release stack designed for modern apps</p>
+                  <p className="text-[13px] font-medium text-white/40 mt-1">
+                    A release stack designed for modern apps
+                  </p>
                 </div>
                 <div className="flex gap-2.5">
                   <span className="h-3.5 w-3.5 rounded-full bg-rose-500/80 shadow-[0_0_10px_rgba(244,63,94,0.5)]" />
@@ -199,7 +229,9 @@ export default function HomePage() {
                       </div>
                       <div>
                         <p className="font-semibold text-white">new_checkout</p>
-                        <p className="text-[12px] font-medium text-white/40 mt-0.5">Roll out to a controlled slice</p>
+                        <p className="text-[12px] font-medium text-white/40 mt-0.5">
+                          Roll out to a controlled slice
+                        </p>
                       </div>
                     </div>
                     <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
@@ -214,20 +246,20 @@ export default function HomePage() {
                         <span className="text-cyan-300 font-bold">35%</span>
                       </div>
                       <div className="h-2.5 rounded-full bg-black/40 overflow-hidden border border-white/5">
-                        <motion.div 
+                        <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: "35%" }}
                           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
                           className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.8)] relative"
                         >
-                           <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                          <div className="absolute inset-0 bg-white/20 animate-pulse" />
                         </motion.div>
                       </div>
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
-                       <MiniCard icon={Users} label="Targeted users" value="beta_customers" />
-                       <MiniCard icon={BarChart3} label="Evaluation" value="local SDK" />
+                      <MiniCard icon={Users} label="Targeted users" value="beta_customers" />
+                      <MiniCard icon={BarChart3} label="Evaluation" value="local SDK" />
                     </div>
                   </div>
                 </div>
@@ -258,7 +290,7 @@ if (flags.isEnabled("new_checkout")) {
       </section>
 
       <section className="relative mx-auto w-full max-w-7xl px-6 pb-6 sm:px-10 lg:px-12 z-10 pt-4">
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -276,14 +308,16 @@ if (flags.isEnabled("new_checkout")) {
                 <item.icon className="h-6 w-6" />
               </div>
               <h2 className="text-xl font-bold text-white mb-3">{item.title}</h2>
-              <p className="text-[15px] leading-relaxed text-white/60 font-medium">{item.description}</p>
+              <p className="text-[15px] leading-relaxed text-white/60 font-medium">
+                {item.description}
+              </p>
             </motion.div>
           ))}
         </motion.div>
       </section>
 
       <section className="relative mx-auto grid w-full max-w-7xl gap-5 px-6 py-10 sm:px-10 lg:grid-cols-[0.9fr_1.1fr] lg:px-12 z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -294,10 +328,14 @@ if (flags.isEnabled("new_checkout")) {
           <div className="inline-flex rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
             Built for devs
           </div>
-          <h2 className="mt-8 text-3xl font-bold text-white leading-snug">Developer ergonomics<br/>that stay out of the way</h2>
+          <h2 className="mt-8 text-3xl font-bold text-white leading-snug">
+            Developer ergonomics
+            <br />
+            that stay out of the way
+          </h2>
           <p className="mt-5 text-[16px] leading-relaxed text-white/60 font-medium">
-            OpenFlags is shaped for the way modern teams already ship: typed SDKs, local evaluation, a simple
-            REST surface, and a codebase you can run anywhere.
+            OpenFlags is shaped for the way modern teams already ship: typed SDKs, local evaluation,
+            a simple REST surface, and a codebase you can run anywhere.
           </p>
           <div className="mt-10 space-y-4">
             {developerBenefits.map((item) => (
@@ -306,7 +344,7 @@ if (flags.isEnabled("new_checkout")) {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -317,10 +355,13 @@ if (flags.isEnabled("new_checkout")) {
           <div className="inline-flex rounded-full border border-violet-400/30 bg-violet-500/15 px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-violet-200 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
             Valuable for product
           </div>
-          <h2 className="mt-8 text-3xl font-bold text-white leading-snug">Safer launches, smaller blast radius.</h2>
+          <h2 className="mt-8 text-3xl font-bold text-white leading-snug">
+            Safer launches, smaller blast radius.
+          </h2>
           <p className="mt-5 text-[16px] leading-relaxed text-white/70 font-medium relative z-10">
-            Product teams get a release lever they can trust. Engineers keep ownership of implementation. Everyone gets a
-            faster path from idea to rollout without depending on a heavy platform migration.
+            Product teams get a release lever they can trust. Engineers keep ownership of
+            implementation. Everyone gets a faster path from idea to rollout without depending on a
+            heavy platform migration.
           </p>
           <div className="mt-10 space-y-4 relative z-10">
             {productBenefits.map((item) => (
@@ -331,7 +372,7 @@ if (flags.isEnabled("new_checkout")) {
       </section>
 
       <section className="relative mx-auto w-full max-w-7xl px-6 pb-12 sm:px-10 lg:px-12 z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -339,15 +380,18 @@ if (flags.isEnabled("new_checkout")) {
           className="grid gap-8 rounded-[3rem] border border-white/10 bg-white/[0.02] p-8 lg:grid-cols-[0.85fr_1.15fr] lg:p-10 backdrop-blur-2xl shadow-2xl relative overflow-hidden"
         >
           <div className="absolute top-0 right-1/4 w-[300px] h-[300px] bg-cyan-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
-          
+
           <div className="relative z-10 my-auto">
             <div className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-white/70">
               Open architecture
             </div>
-            <h2 className="mt-8 text-4xl font-bold text-white leading-tight">Small moving parts,<br/> clear ownership</h2>
+            <h2 className="mt-8 text-4xl font-bold text-white leading-tight">
+              Small moving parts,
+              <br /> clear ownership
+            </h2>
             <p className="mt-6 text-[16px] leading-relaxed text-white/60 font-medium">
-              Server, dashboard, SDKs, and docs each live in the monorepo with a focused role. That keeps contribution
-              straightforward and lowers the cost of full ownership.
+              Server, dashboard, SDKs, and docs each live in the monorepo with a focused role. That
+              keeps contribution straightforward and lowers the cost of full ownership.
             </p>
           </div>
 
@@ -375,7 +419,7 @@ if (flags.isEnabled("new_checkout")) {
       </section>
 
       <section className="relative mx-auto w-full max-w-7xl px-6 pb-16 sm:px-10 lg:px-12 z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -383,14 +427,17 @@ if (flags.isEnabled("new_checkout")) {
           className="rounded-[3rem] border border-violet-500/30 bg-gradient-to-br from-[#09090b] via-violet-950/20 to-cyan-950/20 p-10 text-center lg:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(139,92,246,0.15)]"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.1),transparent_70%)]" />
-          
+
           <div className="relative z-10">
-            <p className="text-[13px] font-bold tracking-[0.24em] text-cyan-300 uppercase shadow-sm">Start with the fundamentals</p>
+            <p className="text-[13px] font-bold tracking-[0.24em] text-cyan-300 uppercase shadow-sm">
+              Start with the fundamentals
+            </p>
             <h2 className="mx-auto mt-6 max-w-3xl text-4xl font-bold text-white sm:text-5xl leading-tight">
               Launch the docs, onboard your team, and ship behind flags.
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-white/70 font-medium">
-              The documentation is ready for product messaging, guides, and SDK usage. Customize it to your needs as OpenFlags grows.
+              The documentation is ready for product messaging, guides, and SDK usage. Customize it
+              to your needs as OpenFlags grows.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-5">
               <Link
@@ -450,7 +497,7 @@ function ArchitectureCard({
   icon: Icon,
   title,
   description,
-  gradient
+  gradient,
 }: {
   icon: typeof Users
   title: string
@@ -459,7 +506,9 @@ function ArchitectureCard({
 }) {
   return (
     <div className="group rounded-[2rem] border border-white/5 bg-black/20 p-6 shadow-inner transition-all hover:bg-white/[0.03] flex gap-5 items-start">
-      <div className={`shrink-0 inline-flex rounded-2xl bg-gradient-to-br ${gradient} p-4 text-white border border-white/10 shadow-inner group-hover:scale-105 transition-transform`}>
+      <div
+        className={`shrink-0 inline-flex rounded-2xl bg-gradient-to-br ${gradient} p-4 text-white border border-white/10 shadow-inner group-hover:scale-105 transition-transform`}
+      >
         <Icon className="h-6 w-6" />
       </div>
       <div>
@@ -480,7 +529,11 @@ function FlagLogo() {
 
 function CodeIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4 stroke-current stroke-2 fill-none stroke-linecap-round stroke-linejoin-round" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4 stroke-current stroke-2 fill-none stroke-linecap-round stroke-linejoin-round"
+      aria-hidden="true"
+    >
       <polyline points="16 18 22 12 16 6"></polyline>
       <polyline points="8 6 2 12 8 18"></polyline>
     </svg>

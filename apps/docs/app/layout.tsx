@@ -31,11 +31,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="min-h-screen bg-[var(--of-background)] text-[var(--of-foreground)] antialiased">
-        <RootProvider theme={{ defaultTheme: "dark", forcedTheme: "dark", enableSystem: false, disableTransitionOnChange: true }}>
+        <RootProvider
+          theme={{
+            defaultTheme: "dark",
+            forcedTheme: "dark",
+            enableSystem: false,
+            disableTransitionOnChange: true,
+          }}
+        >
           {children}
         </RootProvider>
       </body>
     </html>
   )
 }
-

@@ -137,8 +137,8 @@ const server = Bun.serve({
         if (req.method === "GET") {
           const result = await flagsProject.handleFlagsList(db, projectIdOrSlug)
           return jsonResponse(
-            result.body, 
-            result.status, 
+            result.body,
+            result.status,
             result.status === 200 ? { "Cache-Control": "public, max-age=15" } : undefined
           )
         }

@@ -1,15 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion"
 import {
-    Menu,
-    X,
-    Flag,
-    PlusCircle,
-    Settings,
-    LogOut,
-    ChevronRight,
-    User,
-    Command,
-    Users,
+  Menu,
+  X,
+  Flag,
+  PlusCircle,
+  Settings,
+  LogOut,
+  ChevronRight,
+  User,
+  Command,
+  Users,
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, Outlet, useParams, useLocation } from "react-router-dom"
@@ -18,11 +18,11 @@ import { api, type Project } from "@/api"
 import CommandPalette from "@/components/CommandPalette"
 import { Button } from "@/components/ui/button"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/context/AuthContext"
 import { useProjects } from "@/context/ProjectsContext"
@@ -67,8 +67,8 @@ export default function Layout() {
     <div className="flex h-screen overflow-hidden bg-[#050505]">
       {/* Dynamic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600/10 rounded-full blur-[120px] mix-blend-screen" />
-         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-600/10 rounded-full blur-[120px] mix-blend-screen" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600/10 rounded-full blur-[120px] mix-blend-screen" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-600/10 rounded-full blur-[120px] mix-blend-screen" />
       </div>
 
       {/* Mobile overlay */}
@@ -102,7 +102,9 @@ export default function Layout() {
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-violet-500/20 to-cyan-500/20 border border-white/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)] group-hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-shadow duration-300">
               <Flag className="h-4 w-4 text-violet-300" />
             </div>
-            <span className="tracking-tight text-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">OpenFlags</span>
+            <span className="tracking-tight text-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+              OpenFlags
+            </span>
           </Link>
           <Button
             variant="ghost"
@@ -114,7 +116,7 @@ export default function Layout() {
             <X className="h-4 w-4" />
           </Button>
         </div>
-        
+
         <nav className="flex-1 space-y-1 overflow-auto p-3 custom-scrollbar relative z-10">
           <Link
             to="/users"
@@ -129,11 +131,11 @@ export default function Layout() {
             <Users className="h-4 w-4 shrink-0" />
             Users
           </Link>
-          
+
           <div className="px-3 pt-6 pb-2 text-[10px] font-bold uppercase tracking-widest text-white/30">
             Projects
           </div>
-          
+
           {projects.map((p) => (
             <Link
               key={p.id}
@@ -147,17 +149,19 @@ export default function Layout() {
               )}
             >
               {p.id === projectId && (
-                <motion.div 
+                <motion.div
                   layoutId="activeTabIndicator"
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/4 bg-violet-500 rounded-r-full shadow-[0_0_10px_rgba(139,92,246,0.8)]"
                 />
               )}
-              <div className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all duration-300 border",
-                p.id === projectId 
-                  ? "bg-violet-500/20 text-violet-300 border-violet-500/30 shadow-[0_0_15px_rgba(139,92,246,0.2)]" 
-                  : "bg-white/5 text-white/50 border-white/5 group-hover:border-white/20 group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,255,255,0.1)]"
-              )}>
+              <div
+                className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all duration-300 border",
+                  p.id === projectId
+                    ? "bg-violet-500/20 text-violet-300 border-violet-500/30 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                    : "bg-white/5 text-white/50 border-white/5 group-hover:border-white/20 group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+                )}
+              >
                 <span className="text-[11px] font-bold">{p.name.charAt(0).toUpperCase()}</span>
               </div>
               <span className="truncate">{p.name}</span>
@@ -166,7 +170,7 @@ export default function Layout() {
               )}
             </Link>
           ))}
-          
+
           <div className="pt-4">
             {(user?.role === "admin" || user?.role === "developer") && (
               <Link to="/projects/new" onClick={() => setSidebarOpen(false)}>
@@ -178,20 +182,25 @@ export default function Layout() {
             )}
           </div>
         </nav>
-        
+
         <div className="border-t border-white/10 p-4 bg-white/[0.02] backdrop-blur-md relative z-10">
           <div className="flex items-center gap-3 rounded-xl bg-white/5 p-2 px-3 hover:bg-white/10 transition-colors cursor-pointer border border-white/10 shadow-inner group">
-               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 border border-white/10 text-white font-bold text-sm shadow-[0_0_15px_rgba(6,182,212,0.2)] group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all duration-300">
-                 {user?.email?.charAt(0).toUpperCase() || "U"}
-               </div>
-               <div className="flex-1 min-w-0">
-                  <p className="truncate text-sm font-medium text-white group-hover:text-cyan-100 transition-colors" title={user?.email}>
-                    {user?.email}
-                  </p>
-                  <p className="text-[10px] text-cyan-400/70 uppercase tracking-wider font-semibold">{user?.role || "Member"}</p>
-               </div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 border border-white/10 text-white font-bold text-sm shadow-[0_0_15px_rgba(6,182,212,0.2)] group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all duration-300">
+              {user?.email?.charAt(0).toUpperCase() || "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p
+                className="truncate text-sm font-medium text-white group-hover:text-cyan-100 transition-colors"
+                title={user?.email}
+              >
+                {user?.email}
+              </p>
+              <p className="text-[10px] text-cyan-400/70 uppercase tracking-wider font-semibold">
+                {user?.role || "Member"}
+              </p>
             </div>
           </div>
+        </div>
       </aside>
 
       <main className="relative flex-1 flex flex-col min-w-0 z-10">
@@ -217,16 +226,17 @@ export default function Layout() {
               ⌘K
             </kbd>
           </Button>
-          
+
           <div className="ml-auto flex items-center gap-4 shrink-0">
             {currentProject && (
               <>
                 <div className="hidden sm:flex items-center gap-2">
                   <h1 className="text-[13px] font-medium text-white/50 bg-white/5 border border-white/10 rounded-full px-3 py-1 shadow-inner">
-                    Project <span className="text-white ml-1 font-semibold">{currentProject.name}</span>
+                    Project{" "}
+                    <span className="text-white ml-1 font-semibold">{currentProject.name}</span>
                   </h1>
                 </div>
-                
+
                 {user?.role === "admin" && (
                   <Link
                     to={`/projects/${currentProject.id}/settings`}
@@ -236,28 +246,41 @@ export default function Layout() {
                     <span className="hidden sm:inline">Settings</span>
                   </Link>
                 )}
-                
+
                 <div className="w-px h-6 bg-white/10 hidden sm:block mx-1" />
               </>
             )}
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 bg-white/5 hover:bg-white/15 border border-white/10 shadow-inner hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all relative overflow-hidden group">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-xl h-10 w-10 bg-white/5 hover:bg-white/15 border border-white/10 shadow-inner hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all relative overflow-hidden group"
+                >
                   <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <User className="h-5 w-5 text-white/70 relative z-10" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 mt-2 rounded-2xl border-white/10 bg-[#09090b]/90 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_20px_rgba(139,92,246,0.1)] p-2">
+              <DropdownMenuContent
+                align="end"
+                className="w-56 mt-2 rounded-2xl border-white/10 bg-[#09090b]/90 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_20px_rgba(139,92,246,0.1)] p-2"
+              >
                 <div className="px-3 py-2.5">
                   <p className="text-[13px] font-medium text-white truncate">{user?.email}</p>
                   <p className="text-[10px] uppercase tracking-wider text-green-400 mt-0.5 flex items-center gap-1.5 font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" /> Active session
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" />{" "}
+                    Active session
                   </p>
                 </div>
                 <DropdownMenuSeparator className="bg-white/10 my-1" />
-                <DropdownMenuItem asChild className="focus:bg-white/10 rounded-xl mx-1 my-1 px-3 py-2 cursor-pointer transition-colors">
-                  <Link to="/" className="flex items-center text-[13px] font-medium">Projects</Link>
+                <DropdownMenuItem
+                  asChild
+                  className="focus:bg-white/10 rounded-xl mx-1 my-1 px-3 py-2 cursor-pointer transition-colors"
+                >
+                  <Link to="/" className="flex items-center text-[13px] font-medium">
+                    Projects
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => logout()}

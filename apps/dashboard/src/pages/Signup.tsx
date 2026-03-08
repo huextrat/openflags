@@ -47,17 +47,17 @@ export default function Signup() {
         className="w-full max-w-md relative z-10"
       >
         <div className="mb-8 flex justify-center">
-            <div className="flex items-center gap-3">
-               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)]">
-                 <Flag className="h-5 w-5" />
-               </div>
-               <span className="text-2xl font-bold tracking-tight text-white">OpenFlags</span>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)]">
+              <Flag className="h-5 w-5" />
             </div>
+            <span className="text-2xl font-bold tracking-tight text-white">OpenFlags</span>
+          </div>
         </div>
 
         <Card className="border-white/10 bg-white/[0.02] backdrop-blur-2xl shadow-2xl relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          
+
           <CardHeader className="space-y-2 pb-6 text-center pt-8">
             <CardTitle className="text-2xl">Create your account</CardTitle>
             <CardDescription className="text-base text-white/50">
@@ -73,7 +73,7 @@ export default function Signup() {
               }}
             >
               {error && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-500 font-medium"
@@ -98,7 +98,9 @@ export default function Signup() {
                 </div>
               </TextFieldRoot>
               <TextFieldRoot name="password">
-                <TextFieldLabel className="text-white/70">Password (min 8 characters)</TextFieldLabel>
+                <TextFieldLabel className="text-white/70">
+                  Password (min 8 characters)
+                </TextFieldLabel>
                 <div className="relative group">
                   <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30 group-focus-within:text-violet-400 transition-colors" />
                   <TextFieldInput
@@ -114,20 +116,27 @@ export default function Signup() {
                   />
                 </div>
               </TextFieldRoot>
-              <Button type="submit" className="w-full h-12 text-base mt-2 group relative overflow-hidden" size="lg">
-                 <span className="relative z-10 flex items-center justify-center gap-2">
-                   Sign up
-                   <ArrowRight className="h-4 w-4 opacity-70 group-hover:translate-x-1 transition-all" />
-                 </span>
-                 <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+              <Button
+                type="submit"
+                className="w-full h-12 text-base mt-2 group relative overflow-hidden"
+                size="lg"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Sign up
+                  <ArrowRight className="h-4 w-4 opacity-70 group-hover:translate-x-1 transition-all" />
+                </span>
+                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
               </Button>
             </Form.Root>
           </CardContent>
-          
+
           <div className="border-t border-white/5 bg-white/[0.02] p-6 text-center">
             <p className="text-sm text-white/50">
               Already have an account?{" "}
-              <Link to="/login" className="font-semibold text-white hover:text-violet-300 transition-colors">
+              <Link
+                to="/login"
+                className="font-semibold text-white hover:text-violet-300 transition-colors"
+              >
                 Sign in
               </Link>
             </p>
