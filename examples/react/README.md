@@ -17,4 +17,4 @@ Example React app using `@openflags/js` and `@openflags/react` to read feature f
 
 ## For developers
 
-Use this as a reference for integrating OpenFlags in a React app: provider setup, `useFlag` / `useFlags` usage, and optional environment/project configuration.
+Use this as a reference for integrating OpenFlags in a React app: provider setup, `useFlag` / `useFlags` usage, and project configuration.

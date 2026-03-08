@@ -4,8 +4,8 @@ Shared TypeScript types for OpenFlags: flag shape, API payloads, and related str
 
 ## Contents
 
-- **Flag** — `id`, `key`, `enabled`, `rolloutPercentage`, `environment`, optional `users` (string[]).
-- **CreateFlagInput** — `key`, `environment`, optional `enabled`, `rolloutPercentage`, `users`.
+- **Flag** — `id`, `key`, `enabled`, `rolloutPercentage`, optional `users` (string[]).
+- **CreateFlagInput** — `key`, optional `enabled`, `rolloutPercentage`, `users`.
 - **UpdateFlagInput** — Optional `enabled`, `rolloutPercentage`, `users`.
 
 Used by `@openflags/server`, `@openflags/js`, and `@openflags/react` to keep request/response and evaluation logic in sync.

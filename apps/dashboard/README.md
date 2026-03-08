@@ -16,7 +16,7 @@ Set `VITE_API_URL` to your OpenFlags server URL (default: `http://localhost:4000
 
 - **Auth** — Sign up, sign in, sign out. Session via cookie.
 - **Projects** — List, create, open. Sidebar lists your projects.
-- **Flags** — Per-project list with environment filter; create, toggle enabled, edit rollout %, delete.
+- **Flags** — Per-project list; create, toggle enabled, edit rollout %, delete.
 - **Settings** — Project members: invite by email (role: viewer / member / admin), remove (admin only).
 
 ## For developers

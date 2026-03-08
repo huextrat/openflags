@@ -33,7 +33,6 @@
 
 - **Feature flags** — Toggle features without deploys
 - **Percentage rollouts** — Gradual releases
-- **Environments** — dev / staging / prod
 - **Local evaluation** — No extra latency
 - **REST API** — Full control from any stack
 - **JavaScript SDK** — TypeScript-ready
@@ -81,7 +80,8 @@ import { createClient } from "@openflags/js"
 
 const flags = await createClient({
   apiUrl: "http://localhost:4000",
-  userId: "123",
+  project: "my-app",
+  userId: "user_123",
 })
 
 if (flags.isEnabled("new_checkout")) {
@@ -91,16 +91,29 @@ if (flags.isEnabled("new_checkout")) {
 
 ### React
 
-```ts
-import { createClient } from "@openflags/js"
+Wrap your app with `OpenFlagsProvider`, then use `useFlag` or `useFlags` in your components:
 
-const flags = await createClient({
+```tsx
+import { createClient } from "@openflags/js"
+import { OpenFlagsProvider, useFlag } from "@openflags/react"
+
+// At app root (e.g. main.tsx)
+const flagsClient = await createClient({
   apiUrl: "http://localhost:4000",
-  userId: "123",
+  project: "my-app",
+  userId: user?.id,
 })
 
-if (flags.isEnabled("new_checkout")) {
-  showNewCheckout()
+root.render(
+  <OpenFlagsProvider client={flagsClient}>
+    <App />
+  </OpenFlagsProvider>
+)
+
+// In any component
+function Checkout() {
+  const newCheckout = useFlag("new_checkout")
+  return newCheckout ? <NewCheckoutFlow /> : <LegacyCheckout />
 }
 ```
 
@@ -133,16 +146,6 @@ examples/
 ```
 
 **Versioning:** [Changesets](https://github.com/changesets/changesets) — run `bun run changeset` when you change a package, then `bun run version` to update versions and changelogs.
-
----
-
-## 🗺️ Roadmap
-
-| Version  | Scope                                                                    |
-| -------- | ------------------------------------------------------------------------ |
-| **v1**   | Feature flags · rollout percentage · JS SDK · REST API · basic dashboard |
-| **v1.1** | React hooks · caching · CLI                                              |
-| **v2**   | User targeting · experimentation · analytics                             |
 
 ---
 

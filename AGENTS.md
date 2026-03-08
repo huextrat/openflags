@@ -13,7 +13,7 @@ Use this file as context when working on OpenFlags. It summarizes the project, l
 ## Repository layout
 
 - **`apps/`** — Runnable applications
-  - `server` — Fastify API on **Bun**, SQLite via `bun:sqlite`, GET/POST/PATCH /flags, environment + user targeting
+  - `server` — Fastify API on **Bun**, SQLite via `bun:sqlite`, GET/POST/PATCH /flags, user targeting
   - `dashboard` — React + Vite admin UI to list flags and toggle enabled
 - **`packages/`** — Shared libraries
   - `sdk-js` — JavaScript/TypeScript SDK (`@openflags/js`): `createClient()` async, `isEnabled()` sync, `getAll()`
@@ -50,33 +50,31 @@ Default API base URL in examples: `http://localhost:4000`.
 
 ## Core concepts
 
-- **Feature flags** — Toggles keyed by flag name (e.g. `new_checkout`), evaluable per user/environment.
-- **Environments** — dev / staging / prod; flags can differ per environment.
+- **Feature flags** — Toggles keyed by flag name (e.g. `new_checkout`), evaluable per user.
 - **Percentage rollouts** — Gradual rollout by percentage of users.
 - **Local evaluation** — SDK evaluates flags locally when possible (no round-trip for every check).
 
-SDK usage: `const flags = await createClient({ apiUrl, userId, environment? })`; then `flags.isEnabled("flag_key")` (sync). User targeting: if `userId` is in `flag.users`, the flag is on for that user.
+SDK usage: `const flags = await createClient({ apiUrl, project, userId? })`; then `flags.isEnabled("flag_key")` (sync). User targeting: if `userId` is in `flag.users`, the flag is on for that user.
 
 ---
 
 ## Conventions for agents
 
-1. **Read README first** — User-facing behavior, quick start, and roadmap are in [README.md](./README.md). Don’t contradict it unless the user asks for a change.
+1. **Read README first** — User-facing behavior and quick start are in [README.md](./README.md). Don’t contradict it unless the user asks for a change.
 2. **Stack** — Prefer **TypeScript** for app and package code. Use **Bun** for install and run (`bun install`, `bun run <script>`). NPM package scope: **`@openflags/`** (e.g. `@openflags/js`).
-3. **Naming** — Flag keys: `snake_case`. Env names: `dev` / `staging` / `prod` unless the codebase uses different ones.
+3. **Naming** — Flag keys: `snake_case`.
 4. **Where to put things**
    - API and storage logic → `apps/server`
-   - Client SDK and evaluation → `packages/sdk-js` (and later `sdk-react`)
+   - Client SDK and evaluation → `packages/sdk-js` (and `sdk-react`)
    - Shared types → `packages/types` when it exists
    - Docs and specs → README and repo root
-5. **Roadmap** — v1: flags, rollouts, JS SDK, REST API, basic dashboard. v1.1: React hooks, caching, CLI. v2: user targeting, experimentation, analytics. Align new features with these phases when relevant.
-6. **Security** — No secrets or API keys in repo. Validate and sanitize inputs; keep SDK and server contract explicit.
+5. **Security** — No secrets or API keys in repo. Validate and sanitize inputs; keep SDK and server contract explicit.
 
 ---
 
 ## Quick reference for prompts
 
-- **“Add a flag / rollout / env”** → Server API + storage in `apps/server`, and SDK types/behavior in `packages/sdk-js` (and `packages/types` if present).
+- **“Add a flag / rollout”** → Server API + storage in `apps/server`, and SDK types/behavior in `packages/sdk-js` (and `packages/types` if present).
 - **“Dashboard / admin UI”** → `apps/dashboard`.
 - **“React / hooks”** → `packages/sdk-react` and examples in `examples/`.
 - **“Docs”** → README; keep README as the main entry point for humans.
