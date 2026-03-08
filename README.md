@@ -72,6 +72,18 @@ bun run dev:dashboard
 
 ---
 
+## 🐳 Self-hosted (Docker)
+
+To run OpenFlags on your own server (one URL for dashboard + API, data in a volume):
+
+```bash
+docker compose -f infra/docker/docker-compose.yml up -d
+```
+
+Then open **http://localhost:8080** (or your host). First user to sign up is admin. See **[infra/README.md](./infra/README.md)** for options and production tips.
+
+---
+
 ## 📖 Usage
 
 ### JavaScript / TypeScript

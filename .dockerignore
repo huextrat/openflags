@@ -1,0 +1,14 @@
+# Reduce Docker build context
+node_modules
+.git
+.gitignore
+*.md
+.env*
+dist
+.cursor
+.idea
+*.log
+node_modules
+apps/*/node_modules
+packages/*/node_modules
+examples/*/node_modules

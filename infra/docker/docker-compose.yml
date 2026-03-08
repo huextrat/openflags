@@ -1,0 +1,33 @@
+# OpenFlags — self-hosted in one command
+# From repo root: docker compose -f infra/docker/docker-compose.yml up -d
+# Then open http://localhost:8080 (dashboard + API at /api)
+
+services:
+  server:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.server
+    ports:
+      - "4000:4000"
+    volumes:
+      - server_data:/app/apps/server/data
+    environment:
+      PORT: 4000
+      # Allow cookies from the frontend (nginx or public URL)
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.dashboard
+      args:
+        VITE_API_URL: /api
+    ports:
+      - "8080:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  server_data:

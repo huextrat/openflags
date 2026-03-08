@@ -1,0 +1,25 @@
+# OpenFlags API server (Bun + SQLite)
+# Build from repo root: docker build -f infra/docker/Dockerfile.server .
+
+FROM oven/bun:1 AS base
+WORKDIR /app
+
+# Copy workspace layout and lockfile
+COPY package.json bun.lockb* ./
+COPY apps/server/package.json apps/server/
+COPY packages/types/package.json packages/types/
+
+# Install deps (workspace protocol)
+RUN bun install --frozen-lockfile
+
+# Copy server and types source
+COPY apps/server apps/server
+COPY packages/types packages/types
+
+WORKDIR /app/apps/server
+
+# Persist SQLite DB here; mount a volume at /app/apps/server/data
+ENV PORT=4000
+
+EXPOSE 4000
+CMD ["bun", "run", "src/index.ts"]
