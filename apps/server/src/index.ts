@@ -136,7 +136,11 @@ const server = Bun.serve({
         const projectIdOrSlug = flagsListMatch[1]
         if (req.method === "GET") {
           const result = await flagsProject.handleFlagsList(db, projectIdOrSlug)
-          return jsonResponse(result.body, result.status)
+          return jsonResponse(
+            result.body, 
+            result.status, 
+            result.status === 200 ? { "Cache-Control": "public, max-age=15" } : undefined
+          )
         }
         if (req.method === "POST") {
           const authResult = await auth.requireAuth(db, req)
