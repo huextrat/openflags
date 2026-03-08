@@ -6,7 +6,7 @@ FROM oven/bun:1 AS builder
 WORKDIR /app
 
 COPY . .
-RUN bun install --frozen-lockfile
+RUN bun install
 
 WORKDIR /app/apps/dashboard
 ARG VITE_API_URL=/api
