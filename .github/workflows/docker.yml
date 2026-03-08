@@ -1,8 +1,14 @@
 # ------------------------------------------------------------------------------
 # Docker — builds and pushes the all-in-one OpenFlags image to Docker Hub.
-# Triggered on:
-#   1. Every push to main (publishes :latest)
-#   2. Every Git tag matching v* (publishes :1.0.0)
+#
+# Versioning strategy:
+#   - Triggered on every push to main.
+#   - Reads the latest `@openflagsdev/docker@*` Git tag (e.g. @openflagsdev/docker@0.1.0).
+#   - Bumps the patch version (→ @openflagsdev/docker@0.1.1).
+#   - Publishes the image as :0.1.1 and :latest.
+#   - Creates the new @openflagsdev/docker@0.1.1 Git tag for the next run.
+#
+# To set the initial version:  git tag '@openflagsdev/docker@0.1.0' && git push origin '@openflagsdev/docker@0.1.0'
 #
 # Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
 # ------------------------------------------------------------------------------
@@ -12,7 +18,6 @@ name: 🐳 Docker
 on:
   push:
     branches: [main]
-    tags: ["v*"]
 
 jobs:
   docker:
@@ -21,6 +26,31 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed to read git tags
+
+      - name: � Compute next version
+        id: version
+        run: |
+          # Find the latest @openflagsdev/docker@* tag
+          LATEST_TAG=$(git tag --list '@openflagsdev/docker@*' --sort=-v:refname | head -n1)
+
+          if [ -z "$LATEST_TAG" ]; then
+            # No tag yet — start at 0.1.0
+            NEXT_VERSION="0.1.0"
+          else
+            # Strip prefix: @openflagsdev/docker@0.1.0 → 0.1.0
+            CURRENT="${LATEST_TAG#@openflagsdev/docker@}"
+            # Split into major.minor.patch
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+            # Bump patch
+            PATCH=$((PATCH + 1))
+            NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          fi
+
+          echo "version=${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=@openflagsdev/docker@${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "🐳 Next Docker version: ${NEXT_VERSION}"
 
       - name: 🔧 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -31,24 +61,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 🏷️ Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/openflags
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix=
-
       - name: 🐳 Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           file: infra/docker/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/openflags:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/openflags:${{ steps.version.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: 🏷️ Create next Docker tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
