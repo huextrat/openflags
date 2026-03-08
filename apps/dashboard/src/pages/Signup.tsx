@@ -1,11 +1,11 @@
 import * as Form from "@radix-ui/react-form"
 import { motion } from "framer-motion"
-import { Mail, Lock } from "lucide-react"
+import { Mail, Lock, Flag, ArrowRight } from "lucide-react"
 import { useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { TextFieldRoot, TextFieldLabel, TextFieldInput } from "@/components/ui/text-field"
 import { useAuth } from "@/context/AuthContext"
 
@@ -24,26 +24,47 @@ export default function Signup() {
   if (user) return <Navigate to="/" replace />
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900">
-        <p className="text-gray-400">Loading…</p>
+      <div className="flex min-h-screen items-center justify-center bg-[#09090b]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+          <p className="text-sm font-medium text-white/50 tracking-widest uppercase">Loading...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-900 p-6">
+    <div className="flex min-h-[100dvh] items-center justify-center p-6 bg-[#09090b] relative overflow-hidden">
+      {/* Abstract background elements */}
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
+      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-violet-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay" />
+
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-sm"
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md relative z-10"
       >
-        <Card className="border-white/10 bg-gray-800/90">
-          <CardHeader className="space-y-1 pb-2">
-            <CardTitle className="text-gray-100">Create your account</CardTitle>
-            <p className="text-sm text-gray-400">Sign up to manage feature flags.</p>
+        <div className="mb-8 flex justify-center">
+            <div className="flex items-center gap-3">
+               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)]">
+                 <Flag className="h-5 w-5" />
+               </div>
+               <span className="text-2xl font-bold tracking-tight text-white">OpenFlags</span>
+            </div>
+        </div>
+
+        <Card className="border-white/10 bg-white/[0.02] backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          
+          <CardHeader className="space-y-2 pb-6 text-center pt-8">
+            <CardTitle className="text-2xl">Create your account</CardTitle>
+            <CardDescription className="text-base text-white/50">
+              Join OpenFlags to manage feature flags.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-8 pb-8">
             <Form.Root
               className="space-y-5"
               onSubmit={(e) => {
@@ -52,14 +73,18 @@ export default function Signup() {
               }}
             >
               {error && (
-                <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-500 font-medium"
+                >
                   {error}
-                </div>
+                </motion.div>
               )}
               <TextFieldRoot name="email">
-                <TextFieldLabel>Email</TextFieldLabel>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <TextFieldLabel className="text-white/70">Email address</TextFieldLabel>
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30 group-focus-within:text-violet-400 transition-colors" />
                   <TextFieldInput
                     id="email"
                     type="email"
@@ -67,14 +92,15 @@ export default function Signup() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="pl-10"
+                    className="pl-10 h-12 text-base"
+                    placeholder="you@example.com"
                   />
                 </div>
               </TextFieldRoot>
               <TextFieldRoot name="password">
-                <TextFieldLabel>Password (min 8 characters)</TextFieldLabel>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <TextFieldLabel className="text-white/70">Password (min 8 characters)</TextFieldLabel>
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30 group-focus-within:text-violet-400 transition-colors" />
                   <TextFieldInput
                     id="password"
                     type="password"
@@ -83,21 +109,29 @@ export default function Signup() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={8}
-                    className="pl-10"
+                    className="pl-10 h-12 text-base"
+                    placeholder="••••••••"
                   />
                 </div>
               </TextFieldRoot>
-              <Button type="submit" className="w-full" size="lg">
-                Sign up
+              <Button type="submit" className="w-full h-12 text-base mt-2 group relative overflow-hidden" size="lg">
+                 <span className="relative z-10 flex items-center justify-center gap-2">
+                   Sign up
+                   <ArrowRight className="h-4 w-4 opacity-70 group-hover:translate-x-1 transition-all" />
+                 </span>
+                 <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
               </Button>
             </Form.Root>
-            <p className="mt-6 text-center text-sm text-gray-400">
+          </CardContent>
+          
+          <div className="border-t border-white/5 bg-white/[0.02] p-6 text-center">
+            <p className="text-sm text-white/50">
               Already have an account?{" "}
-              <Link to="/login" className="font-medium text-violet-400 hover:text-violet-300">
+              <Link to="/login" className="font-semibold text-white hover:text-violet-300 transition-colors">
                 Sign in
               </Link>
             </p>
-          </CardContent>
+          </div>
         </Card>
       </motion.div>
     </div>

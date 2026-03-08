@@ -1,0 +1,47 @@
+---
+title: React SDK
+description: Wrap your app with the provider and read flags through hooks.
+---
+
+# React SDK
+
+The `@openflags/react` package builds on the core client and gives React applications an idiomatic hook-based API.
+
+## Provider setup
+
+```tsx
+import { OpenFlagsProvider } from "@openflags/react"
+
+root.render(
+  <OpenFlagsProvider
+    apiUrl="http://localhost:4000"
+    project="my-app"
+    userId={user?.id}
+    refreshIntervalMs={60_000}
+  >
+    <App />
+  </OpenFlagsProvider>,
+)
+```
+
+## Read a single flag
+
+```tsx
+import { useFlag } from "@openflags/react"
+
+export function Checkout() {
+  const newCheckout = useFlag("new_checkout")
+  return newCheckout ? <NewCheckoutFlow /> : <LegacyCheckout />
+}
+```
+
+## Read all flags
+
+Use `useFlags()` when a view needs multiple values and you want a single integration point.
+
+## Good fit for
+
+- React SPA dashboards
+- Vite apps
+- Next.js client-side surfaces
+- Product experiments with fast UI branching

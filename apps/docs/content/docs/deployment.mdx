@@ -1,0 +1,38 @@
+---
+title: Deployment
+description: Notes for self-hosting OpenFlags and packaging the docs site.
+---
+
+# Deployment
+
+OpenFlags is designed to be self-hosted. The infrastructure story should stay easy to understand and practical for small teams as well as growing SaaS products.
+
+## Docker-based setup
+
+The repository already includes Docker assets for running OpenFlags with one URL for the dashboard and API:
+
+```bash
+docker compose -f infra/docker/docker-compose.yml up -d
+```
+
+That is the best starting point when you want a predictable local or server deployment baseline.
+
+## Hosting the docs site
+
+The docs app lives in `apps/docs` and can be deployed independently as a Next.js application.
+
+Recommended approach:
+
+- build it from the monorepo with Bun,
+- publish the static and server output through your standard Next.js hosting flow,
+- keep product messaging and technical docs in the same app so the site stays cohesive.
+
+## Recommended production split
+
+- **API / server** behind your preferred runtime and storage setup
+- **Dashboard** as the admin surface for teams
+- **Docs** as the public-facing website and developer onboarding entry point
+
+## Why this split works
+
+It keeps the public site clean while allowing the control plane and admin surface to evolve independently. For a feature flag platform, that means documentation can serve both product messaging and implementation guidance without competing with operator workflows.

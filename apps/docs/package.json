@@ -1,0 +1,42 @@
+{
+  "name": "@openflags/docs",
+  "version": "0.0.1",
+  "private": true,
+  "description": "OpenFlags documentation and marketing site.",
+  "homepage": "https://github.com/huextrat/openflags#readme",
+  "bugs": {
+    "url": "https://github.com/huextrat/openflags/issues"
+  },
+  "license": "MIT",
+  "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huextrat/openflags.git",
+    "directory": "apps/docs"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.2.1",
+    "framer-motion": "^12.35.1",
+    "fumadocs-core": "^16.6.10",
+    "fumadocs-mdx": "^14.2.9",
+    "fumadocs-ui": "^16.6.10",
+    "lucide-react": "^0.577.0",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/mdx": "^2.0.13",
+    "@types/node": "^25.3.5",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}

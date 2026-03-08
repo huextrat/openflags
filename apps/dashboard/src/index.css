@@ -1,50 +1,62 @@
 @import "tailwindcss";
 
-/* Dark theme - premium SaaS (Stripe/Vercel/Supabase style) */
 :root {
-  --background: #111827; /* gray-900 */
-  --foreground: #f3f4f6; /* gray-100 */
-  --card: #1f2937; /* gray-800 */
-  --card-hover: #374151; /* gray-750-ish */
-  --muted: #6b7280; /* gray-400 */
-  --border: rgba(255 255 255 / 0.06);
-  --primary: #8b5cf6; /* violet-500 */
-  --primary-hover: #7c3aed; /* violet-600 */
-  --primary-foreground: #fff;
+  --background: #09090b; /* zinc-950 alias but pure */
+  --foreground: #fafafa;
+  --card: rgba(255 255 255 / 0.02);
+  --card-hover: rgba(255 255 255 / 0.04);
+  --muted: rgba(250 250 250 / 0.4);
+  --border: rgba(255 255 255 / 0.08); /* Lighter, more subtle borders */
+  --primary: #9333ea; /* A more vibrant purple */
+  --primary-hover: #a855f7;
+  --primary-foreground: #ffffff;
   --destructive: #ef4444;
-  --ring: #8b5cf6;
+  --ring: rgba(147 51 234 / 0.5);
   --radius: 0.75rem;
   --radius-lg: 1rem;
-  --glass: rgba(31 41 55 / 0.7);
+  --glass: rgba(255 255 255 / 0.03);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   margin: 0;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(147 51 234 / 0.15), transparent),
+    radial-gradient(ellipse 80% 50% at 80% 120%, rgba(56 189 248 / 0.1), transparent);
+  color: var(--foreground);
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
 }
 
 #root {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 * {
   border-color: var(--border);
+  box-sizing: border-box;
 }
 
-/* Cursor pointer on all clickable elements */
 button:not(:disabled),
 a[href],
 [role="button"]:not([aria-disabled="true"]) {
   cursor: pointer;
 }
 
-/* Scrollbar - subtle dark */
+::selection {
+  background: rgba(147 51 234 / 0.3);
+  color: white;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -54,5 +66,26 @@ a[href],
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255 255 255 / 0.15);
+  background: rgba(255 255 255 / 0.2);
+}
+
+/* Custom Utilities for Premium effects */
+@layer utilities {
+  .clip-padding {
+    background-clip: padding-box;
+  }
+  .animate-in {
+    animation: animate-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes animate-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -1,0 +1,55 @@
+---
+title: Concepts
+description: The release and targeting model behind OpenFlags.
+---
+
+# Concepts
+
+OpenFlags focuses on a small set of ideas that cover most rollout needs without forcing a complex platform model.
+
+## Feature flags
+
+A feature flag is identified by a key such as `new_checkout`. Applications ask whether the flag is enabled and branch their behavior accordingly.
+
+This makes it possible to:
+
+- release features independently from deployment,
+- disable risky behavior quickly,
+- stage launches over time,
+- coordinate engineering and product decisions with less friction.
+
+## Local evaluation
+
+The JavaScript SDK fetches flag data and evaluates it locally where possible. This helps keep the application path simple and avoids introducing a round trip for every user-facing decision.
+
+Local evaluation is especially useful when:
+
+- latency matters,
+- you want predictable behavior on the client side,
+- you prefer fewer moving parts in the request path.
+
+## Percentage rollouts
+
+Not every launch should go to 100% of users immediately. Percentage rollouts let a team start with a small slice, monitor results, and gradually expand exposure.
+
+This is useful for:
+
+- validating infrastructure impact,
+- spotting regressions early,
+- reducing the blast radius of a new feature.
+
+## User targeting
+
+OpenFlags can explicitly enable a feature for selected users. This is helpful for internal testing, beta programs, customer pilots, or stakeholder review before a broad release.
+
+## Control plane and runtime
+
+The **server** acts as the control plane where flags are stored and updated.
+
+The **SDK** is the runtime layer that applications use to decide whether a flag is on.
+
+Keeping those responsibilities separate makes the system easier to reason about:
+
+- operators and product teams manage releases centrally,
+- applications keep fast, local checks,
+- the implementation stays lightweight enough to self-host comfortably.

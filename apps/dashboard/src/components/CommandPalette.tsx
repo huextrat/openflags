@@ -1,9 +1,9 @@
 import { Command, Flag, PlusCircle, Settings, LogOut, LayoutDashboard, Users } from "lucide-react"
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { motion, AnimatePresence } from "framer-motion"
 
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { useAuth } from "@/context/AuthContext"
 import { useProjects } from "@/context/ProjectsContext"
 import { cn } from "@/lib/utils"
@@ -40,7 +40,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
         id: "home",
         label: "Projects",
         path: "/",
-        icon: <LayoutDashboard className="h-4 w-4" />,
+        icon: <LayoutDashboard className="h-4 w-4 text-cyan-400" />,
       },
       ...(user?.role === "admin" || user?.role === "developer"
         ? [
@@ -49,7 +49,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
               id: "new",
               label: "New project",
               path: "/projects/new",
-              icon: <PlusCircle className="h-4 w-4" />,
+              icon: <PlusCircle className="h-4 w-4 text-violet-400" />,
             },
           ]
         : []),
@@ -58,7 +58,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
         id: p.id,
         label: p.name,
         path: `/projects/${p.id}`,
-        icon: <Flag className="h-4 w-4" />,
+        icon: <Flag className="h-4 w-4 text-emerald-400" />,
       })),
     ]
     list.splice(2, 0, {
@@ -66,7 +66,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
       id: "users",
       label: "Users",
       path: "/users",
-      icon: <Users className="h-4 w-4" />,
+      icon: <Users className="h-4 w-4 text-blue-400" />,
     })
     if (projectId && user?.role === "admin") {
       list.splice(2, 0, {
@@ -74,14 +74,14 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
         id: "settings",
         label: "Project settings",
         path: `/projects/${projectId}/settings`,
-        icon: <Settings className="h-4 w-4" />,
+        icon: <Settings className="h-4 w-4 text-amber-400" />,
       })
     }
     list.push({
       type: "action",
       id: "signout",
       label: "Sign out",
-      icon: <LogOut className="h-4 w-4" />,
+      icon: <LogOut className="h-4 w-4 text-red-400" />,
       run: () => {
         onOpenChange(false)
         logout()
@@ -130,51 +130,97 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        showClose={true}
-        className="max-w-lg border-white/10 bg-gray-800/95 p-0 gap-0 overflow-hidden"
+        showClose={false}
+        className="max-w-xl p-0 gap-0 overflow-hidden bg-[#09090b]/80 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_20px_rgba(139,92,246,0.1)] sm:rounded-[24px]"
       >
-        <div className="flex items-center gap-2 border-b border-white/5 px-4 py-3">
-          <Command className="h-4 w-4 shrink-0 text-gray-500" />
-          <Input
+        <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
+        
+        <div className="relative flex items-center gap-3 border-b border-white/10 px-5 py-4 z-10">
+          <Command className="h-5 w-5 shrink-0 text-white/50" />
+          <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search projects or actions…"
-            className="border-0 bg-transparent shadow-none focus-visible:ring-0"
+            className="flex-1 border-0 bg-transparent text-lg text-white placeholder:text-white/40 focus:outline-none focus:ring-0 px-0"
           />
         </div>
-        <div className="max-h-[min(60vh,400px)] overflow-auto py-2">
+        
+        <div className="relative max-h-[min(50vh,350px)] overflow-y-auto px-2 py-3 z-10 scrollbar-hide">
           {items.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-gray-500">No results</p>
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+              <Command className="h-8 w-8 text-white/20 mb-3" />
+              <p className="text-sm text-white/50">No results found for "{query}"</p>
+            </div>
           ) : (
-            <ul className="space-y-0.5">
-              {items.map((item, i) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelect(item)}
-                    className={cn(
-                      "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
-                      i === selectedIndex
-                        ? "bg-white/10 text-gray-100"
-                        : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                    )}
+            <ul className="space-y-1">
+              <AnimatePresence>
+                {items.map((item, i) => (
+                  <motion.li 
+                    key={item.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.02, duration: 0.2 }}
                   >
-                    <span className="text-gray-500">{item.icon}</span>
-                    <span className="truncate">{item.label}</span>
-                  </button>
-                </li>
-              ))}
+                    <button
+                      type="button"
+                      onClick={() => handleSelect(item)}
+                      className={cn(
+                        "relative flex w-full items-center gap-3 px-3 py-3 text-left text-[15px] font-medium transition-all rounded-xl group overflow-hidden",
+                        i === selectedIndex
+                          ? "bg-white/10 text-white shadow-sm"
+                          : "text-white/60 hover:bg-white/5 hover:text-white"
+                      )}
+                    >
+                      {i === selectedIndex && (
+                        <motion.div 
+                          layoutId="command-palette-active-item"
+                          className="absolute inset-0 bg-white/5 border border-white/10 rounded-xl"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      
+                      <div className={cn(
+                        "relative z-10 flex h-8 w-8 items-center justify-center rounded-lg transition-colors border",
+                        i === selectedIndex ? "bg-white/10 border-white/20" : "bg-white/5 border-transparent group-hover:bg-white/10 group-hover:border-white/10"
+                      )}>
+                        {item.icon}
+                      </div>
+                      
+                      <span className="relative z-10 truncate">{item.label}</span>
+                      
+                      {i === selectedIndex && (
+                        <div className="relative z-10 ml-auto flex items-center gap-1">
+                          <span className="text-xs text-white/40">Press</span>
+                          <kbd className="inline-flex h-5 w-5 items-center justify-center rounded bg-white/10 font-sans text-[10px] font-medium text-white/70">
+                            ↵
+                          </kbd>
+                        </div>
+                      )}
+                    </button>
+                  </motion.li>
+                ))}
+              </AnimatePresence>
             </ul>
           )}
         </div>
-        <p className="border-t border-white/5 px-4 py-2 text-xs text-gray-600">
-          <kbd className="rounded bg-gray-700/50 px-1.5 py-0.5">↑↓</kbd> navigate
-          {" · "}
-          <kbd className="rounded bg-gray-700/50 px-1.5 py-0.5">↵</kbd> select
-          {" · "}
-          <kbd className="rounded bg-gray-700/50 px-1.5 py-0.5">esc</kbd> close
-        </p>
+        
+        <div className="relative border-t border-white/5 bg-black/20 px-4 py-3 text-xs text-white/40 flex items-center gap-4 z-10 rounded-b-[24px]">
+          <span className="flex items-center gap-1.5">
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">↑</kbd>
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">↓</kbd>
+            <span>navigate</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-1.5 font-sans shadow-sm ring-1 ring-white/10">↵</kbd>
+            <span>select</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="inline-flex h-5 bg-white/10 items-center rounded px-2 font-sans shadow-sm ring-1 ring-white/10">esc</kbd>
+            <span>close</span>
+          </span>
+        </div>
       </DialogContent>
     </Dialog>
   )

@@ -1,0 +1,68 @@
+---
+title: Quickstart
+description: Get the monorepo running locally and understand the main developer workflow.
+---
+
+# Quickstart
+
+This repository is a Bun monorepo. The fastest way to understand OpenFlags is to run the main applications locally, then connect an app to the SDK.
+
+## Requirements
+
+- [Bun](https://bun.sh)
+- A local environment capable of running the server and dashboard
+
+## Install dependencies
+
+```bash
+bun install
+```
+
+## Run the main apps
+
+```bash
+bun run dev:server
+```
+
+In a second terminal:
+
+```bash
+bun run dev:dashboard
+```
+
+If you want the docs app too:
+
+```bash
+bun run dev:docs
+```
+
+## What you get
+
+- The **server** exposes the flag API and stores rollout data.
+- The **dashboard** lets you manage projects, users, and feature flags.
+- The **docs site** gives onboarding and product messaging in one place.
+
+## Typical flow
+
+1. Create or choose a project.
+2. Define a feature flag with a stable `snake_case` key.
+3. Enable it for a subset of users or by rollout percentage.
+4. Use the SDK in your app to check the flag locally.
+
+## First integration example
+
+```ts
+import { createClient } from "@openflags/js"
+
+const flags = await createClient({
+  apiUrl: "http://localhost:4000",
+  project: "my-app",
+  userId: "user_123",
+})
+
+if (flags.isEnabled("new_checkout")) {
+  showNewCheckout()
+}
+```
+
+Continue with [Concepts](/docs/concepts) for the reasoning behind evaluation and rollout behavior.

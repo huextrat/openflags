@@ -1,0 +1,41 @@
+---
+title: JavaScript SDK
+description: Use the core client in any JavaScript or TypeScript application.
+---
+
+# JavaScript SDK
+
+The `@openflags/js` package is the core integration point for JavaScript and TypeScript applications.
+
+## Create a client
+
+```ts
+import { createClient } from "@openflags/js"
+
+const flags = await createClient({
+  apiUrl: "http://localhost:4000",
+  project: "my-app",
+  userId: "user_123",
+  refreshIntervalMs: 60_000,
+})
+```
+
+## Evaluate a flag
+
+```ts
+if (flags.isEnabled("new_checkout")) {
+  renderModernCheckout()
+}
+```
+
+## Useful capabilities
+
+- Synchronous `isEnabled()` checks after the client has been created
+- `getAll()` access when you need a full view of the current flag set
+- `refresh()` when your app wants to refetch flag data explicitly
+
+## Best practices
+
+- Keep flag keys stable and descriptive.
+- Pass a `userId` when targeting matters.
+- Prefer local evaluation for latency-sensitive application paths.

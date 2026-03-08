@@ -22,6 +22,7 @@
     "changeset": "bunx changeset",
     "dev": "bunx turbo run dev --parallel",
     "dev:dashboard": "bun run --cwd apps/dashboard dev",
+    "dev:docs": "bun run --cwd apps/docs dev",
     "dev:server": "bun run --cwd apps/server dev",
     "fmt": "oxfmt --write .",
     "fmt:check": "oxfmt --check .",

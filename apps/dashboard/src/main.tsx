@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       theme="dark"
       toastOptions={{
         classNames: {
-          toast: "bg-gray-800 border border-white/10 text-gray-100",
+          toast: "bg-white/[0.08] border border-white/10 text-white backdrop-blur",
           success: "border-violet-500/50",
           error: "border-red-500/50",
         },

@@ -1,0 +1,41 @@
+---
+title: Introduction
+description: What OpenFlags is, who it is for, and why the architecture is intentionally lightweight.
+---
+
+# OpenFlags
+
+OpenFlags is an open-source, self-hosted feature flag platform for modern JavaScript teams.
+
+It is designed for teams that want the safety of feature flags without adopting a heavy control plane or an expensive hosted dependency. The goal is simple: let developers ship faster, let product teams release with confidence, and keep infrastructure ownership close to the product.
+
+## Why teams use it
+
+- **Self-hosted by default** so data, rollout logic, and operational decisions stay under your control.
+- **Local evaluation** so applications can decide feature state without introducing an extra network hop on every check.
+- **Percentage rollouts and targeting** so launches can be gradual instead of risky.
+- **JavaScript-first SDKs** so integration feels natural in React, Next.js, Vite, Node.js, and related stacks.
+
+## Core building blocks
+
+OpenFlags is organized around a few focused parts:
+
+- **Server** for flag storage, API access, and targeting rules.
+- **Dashboard** for operators, product, and engineering teams to manage rollouts.
+- **SDKs** for evaluating flags inside applications.
+- **Docs** for onboarding, implementation references, and product-facing guidance.
+
+## Who it is for
+
+OpenFlags is a good fit when your team wants:
+
+- safer releases without platform sprawl,
+- a transparent codebase that can be self-hosted,
+- a feature flag system that feels natural in a JavaScript monorepo,
+- a clear path from product idea to controlled rollout.
+
+## Next steps
+
+- Read the [Quickstart](/docs/quickstart) to get the repo running.
+- Review [Concepts](/docs/concepts) to understand rollouts and evaluation.
+- Explore the [SDK guides](/docs/sdks/javascript) before integrating an application.
