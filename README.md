@@ -29,16 +29,30 @@ Most feature flag platforms are expensive, enterprise-heavy, and add unnecessary
 
 ---
 
-## ⚡ 1-Click Deployment (Docker)
+## ⚡ Deploy with Docker
 
-To deploy OpenFlags in production securely on a VPS or cloud instance:
+### Option A — All-in-one image (recommended)
+
+A single container serves the API + Dashboard on one port. No nginx needed.
 
 ```bash
-# Clone the repository
+docker run -d \
+  --name openflags \
+  -p 4000:4000 \
+  -v openflags_data:/app/data \
+  -e CORS_ORIGIN=https://flags.yourcompany.com \
+  huextrat/openflags:latest
+```
+
+Open **`http://localhost:4000`**.
+
+### Option B — Multi-container (docker compose)
+
+Run the API and Dashboard as two separate services behind an nginx reverse proxy:
+
+```bash
 git clone https://github.com/huextrat/openflags.git
 cd openflags
-
-# Start the server and dashboard
 docker compose up -d
 ```
 
@@ -46,7 +60,15 @@ Open **`http://localhost:8080`**.
 
 > The first user to sign up automatically becomes the **Platform Admin**.
 
-_See [infra/README.md](./infra/README.md) for reverse proxy and production configs._
+### Environment variables
+
+| Variable      | Default                 | Description                                          |
+| ------------- | ----------------------- | ---------------------------------------------------- |
+| `PORT`        | `4000`                  | Server port                                          |
+| `CORS_ORIGIN` | `http://localhost:4000` | Allowed origin for cookies (set your domain in prod) |
+| `DATA_DIR`    | `/app/data`             | SQLite database directory — mount a volume here      |
+
+_See [docs/deployment](https://openflags.dev/docs/deployment) for production tips and reverse proxy setup._
 
 ---
 

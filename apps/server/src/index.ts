@@ -1,3 +1,5 @@
+import { join, extname } from "node:path"
+
 import * as auth from "./auth.js"
 import { initDb } from "./db.js"
 import * as flagsProject from "./flagsProject.js"
@@ -6,6 +8,26 @@ import * as users from "./users.js"
 
 const port = Number(process.env.PORT) || 4000
 const db = initDb()
+
+// When DASHBOARD_DIR is set (all-in-one Docker mode), we serve the
+// dashboard SPA from that directory and prefix all API routes with /api.
+const dashboardDir = process.env.DASHBOARD_DIR ?? ""
+const isEmbedded = dashboardDir.length > 0
+const apiPrefix = isEmbedded ? "/api" : ""
+
+const MIME_TYPES: Record<string, string> = {
+  ".html": "text/html",
+  ".js": "application/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".woff2": "font/woff2",
+  ".woff": "font/woff",
+  ".ttf": "font/ttf",
+}
 
 function corsHeaders(): HeadersInit {
   return {
@@ -35,8 +57,44 @@ const server = Bun.serve({
     const pathname = url.pathname
 
     try {
+      // Strip the API prefix for route matching
+      const routePath =
+        isEmbedded && pathname.startsWith(apiPrefix)
+          ? pathname.slice(apiPrefix.length) || "/"
+          : isEmbedded
+            ? null // Not an API route in embedded mode
+            : pathname
+
+      // ----- Serve Dashboard (embedded mode) -----
+      if (isEmbedded && routePath === null) {
+        // Try to serve a static file from the dashboard build
+        const filePath = join(dashboardDir, pathname)
+        const file = Bun.file(filePath)
+        if (await file.exists()) {
+          const ext = extname(pathname)
+          const contentType = MIME_TYPES[ext] ?? "application/octet-stream"
+          return new Response(file, {
+            headers: {
+              "Content-Type": contentType,
+              ...(ext !== ".html"
+                ? { "Cache-Control": "public, max-age=31536000, immutable" }
+                : {}),
+            },
+          })
+        }
+        // SPA fallback: serve index.html for client-side routing
+        const indexPath = join(dashboardDir, "index.html")
+        const indexFile = Bun.file(indexPath)
+        if (await indexFile.exists()) {
+          return new Response(indexFile, {
+            headers: { "Content-Type": "text/html" },
+          })
+        }
+        return new Response("Not Found", { status: 404 })
+      }
+
       // ----- Auth -----
-      if (pathname === "/auth/signup" && req.method === "POST") {
+      if (routePath === "/auth/signup" && req.method === "POST") {
         const body = (await req.json()) as { email?: string; password?: string }
         const result = await auth.signup(db, body)
         const headers: HeadersInit = result.sessionId
@@ -44,7 +102,7 @@ const server = Bun.serve({
           : {}
         return jsonResponse(result.body, result.status, headers)
       }
-      if (pathname === "/auth/login" && req.method === "POST") {
+      if (routePath === "/auth/login" && req.method === "POST") {
         const body = (await req.json()) as { email?: string; password?: string }
         const result = await auth.login(db, body)
         const headers: HeadersInit = result.sessionId
@@ -52,13 +110,13 @@ const server = Bun.serve({
           : {}
         return jsonResponse(result.body, result.status, headers)
       }
-      if (pathname === "/auth/logout" && req.method === "POST") {
+      if (routePath === "/auth/logout" && req.method === "POST") {
         const result = await auth.logout(db, req)
         return jsonResponse(result.body, result.status, {
           "Set-Cookie": auth.clearSessionCookieHeader(),
         })
       }
-      if (pathname === "/auth/me" && req.method === "GET") {
+      if (routePath === "/auth/me" && req.method === "GET") {
         const user = await auth.getSessionUser(db, req)
         if (!user) return jsonResponse({ error: "Unauthorized" }, 401)
         return jsonResponse(
@@ -68,20 +126,20 @@ const server = Bun.serve({
       }
 
       // ----- Global users (platform admin only) -----
-      if (pathname === "/users" && req.method === "GET") {
+      if (routePath === "/users" && req.method === "GET") {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
         const result = await users.listUsers(db)
         return jsonResponse(result.body, result.status)
       }
-      if (pathname === "/users" && req.method === "POST") {
+      if (routePath === "/users" && req.method === "POST") {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
         const body = (await req.json()) as { email?: string; role?: string }
         const result = await users.inviteUser(db, authResult.user.id, body)
         return jsonResponse(result.body, result.status)
       }
-      const userIdMatch = pathname.match(/^\/users\/([^/]+)$/)
+      const userIdMatch = routePath?.match(/^\/users\/([^/]+)$/)
       if (userIdMatch) {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
@@ -98,13 +156,13 @@ const server = Bun.serve({
       }
 
       // ----- Projects (authenticated) -----
-      if (pathname === "/projects" && req.method === "GET") {
+      if (routePath === "/projects" && req.method === "GET") {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
         const list = await projects.getAllProjects(db)
         return jsonResponse(list, 200)
       }
-      if (pathname === "/projects" && req.method === "POST") {
+      if (routePath === "/projects" && req.method === "POST") {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
         if (!auth.requireCanCreateProject(db, authResult.user.id)) {
@@ -115,7 +173,7 @@ const server = Bun.serve({
         return jsonResponse(result.body, result.status)
       }
 
-      const projectIdMatch = pathname.match(/^\/projects\/([^/]+)$/)
+      const projectIdMatch = routePath?.match(/^\/projects\/([^/]+)$/)
       if (projectIdMatch) {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
@@ -131,7 +189,7 @@ const server = Bun.serve({
       }
 
       // ----- Project flags: GET is public (SDK), POST/PATCH/DELETE require auth -----
-      const flagsListMatch = pathname.match(/^\/projects\/([^/]+)\/flags$/)
+      const flagsListMatch = routePath?.match(/^\/projects\/([^/]+)\/flags$/)
       if (flagsListMatch) {
         const projectIdOrSlug = flagsListMatch[1]
         if (req.method === "GET") {
@@ -155,7 +213,7 @@ const server = Bun.serve({
           return jsonResponse(result.body, result.status)
         }
       }
-      const flagDetailMatch = pathname.match(/^\/projects\/([^/]+)\/flags\/([^/]+)$/)
+      const flagDetailMatch = routePath?.match(/^\/projects\/([^/]+)\/flags\/([^/]+)$/)
       if (flagDetailMatch) {
         const authResult = await auth.requireAuth(db, req)
         if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
@@ -197,4 +255,8 @@ const server = Bun.serve({
   },
 })
 
-console.log(`Server listening on http://localhost:${server.port}`)
+if (isEmbedded) {
+  console.log(`OpenFlags listening on http://localhost:${server.port} (API + Dashboard)`)
+} else {
+  console.log(`Server listening on http://localhost:${server.port}`)
+}

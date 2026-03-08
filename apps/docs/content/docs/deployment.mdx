@@ -1,38 +1,94 @@
 ---
 title: Deployment
-description: Notes for self-hosting OpenFlags and packaging the docs site.
+description: Deploy OpenFlags to production with Docker in one command.
 ---
 
 # Deployment
 
-OpenFlags is designed to be self-hosted. The infrastructure story should stay easy to understand and practical for small teams as well as growing SaaS products.
+OpenFlags ships as a single, all-in-one Docker image. One container serves both the API and the Dashboard on the same port — no nginx, no reverse proxy configuration needed.
 
-## Docker-based setup
-
-The repository already includes Docker assets for running OpenFlags with one URL for the dashboard and API:
+## Quick start (Docker Hub)
 
 ```bash
-docker compose -f infra/docker/docker-compose.yml up -d
+docker run -d \
+  --name openflags \
+  -p 4000:4000 \
+  -v openflags_data:/app/data \
+  -e CORS_ORIGIN=https://flags.yourcompany.com \
+  huextrat/openflags:latest
 ```
 
-That is the best starting point when you want a predictable local or server deployment baseline.
+Open **http://localhost:4000** — the first user to sign up becomes Platform Admin.
+
+## Docker Compose
+
+Create a `docker-compose.yml` anywhere on your server:
+
+```yaml
+services:
+  openflags:
+    image: huextrat/openflags:latest
+    ports:
+      - "4000:4000"
+    volumes:
+      - openflags_data:/app/data
+    environment:
+      PORT: 4000
+      CORS_ORIGIN: https://flags.yourcompany.com
+    restart: unless-stopped
+
+volumes:
+  openflags_data:
+```
+
+```bash
+docker compose up -d
+```
+
+## Environment variables
+
+| Variable        | Default                 | Description                                                               |
+| --------------- | ----------------------- | ------------------------------------------------------------------------- |
+| `PORT`          | `4000`                  | Port the server listens on                                                |
+| `CORS_ORIGIN`   | `http://localhost:4000` | Allowed origin for auth cookies — set to your public domain in production |
+| `DASHBOARD_DIR` | `/app/public`           | Path to dashboard static files (pre-configured in the Docker image)       |
+| `DATA_DIR`      | `/app/data`             | SQLite database directory — **mount a volume here** to persist data       |
+
+## Build from source
+
+If you prefer to build the image yourself:
+
+```bash
+git clone https://github.com/huextrat/openflags.git
+cd openflags
+docker build -f infra/docker/Dockerfile -t openflags .
+docker run -d -p 4000:4000 -v openflags_data:/app/data openflags
+```
+
+## Multi-container setup
+
+The repository also includes separate Dockerfiles for running the server and dashboard independently behind nginx. This is useful for teams that want to scale or deploy each component separately:
+
+```bash
+docker compose up -d   # uses docker-compose.yml at repo root
+```
+
+This starts:
+
+- **Server** on port `4000`
+- **Dashboard + nginx** on port `8080` (proxies `/api/` → server)
 
 ## Hosting the docs site
 
-The docs app lives in `apps/docs` and can be deployed independently as a Next.js application.
+The documentation lives in `apps/docs` and is a standalone Next.js application. Deploy it to **Vercel** for the best experience:
 
-Recommended approach:
+1. Connect your GitHub repository to Vercel.
+2. Set the root directory to `apps/docs`.
+3. Vercel auto-detects Next.js + Turborepo — deploy takes ~1 minute.
 
-- build it from the monorepo with Bun,
-- publish the static and server output through your standard Next.js hosting flow,
-- keep product messaging and technical docs in the same app so the site stays cohesive.
+## Production checklist
 
-## Recommended production split
-
-- **API / server** behind your preferred runtime and storage setup
-- **Dashboard** as the admin surface for teams
-- **Docs** as the public-facing website and developer onboarding entry point
-
-## Why this split works
-
-It keeps the public site clean while allowing the control plane and admin surface to evolve independently. For a feature flag platform, that means documentation can serve both product messaging and implementation guidance without competing with operator workflows.
+- [ ] Set `CORS_ORIGIN` to your actual domain (e.g. `https://flags.yourcompany.com`)
+- [ ] Mount a persistent volume for `/app/data` so your SQLite database survives restarts
+- [ ] Place OpenFlags behind a reverse proxy (Caddy, Traefik, nginx) for SSL termination
+- [ ] Use a custom domain with HTTPS for cookie security

@@ -30,7 +30,7 @@
     "install:clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules examples/*/node_modules && bun install",
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
-    "release": "bun run compile && bunx changeset publish",
+    "release": "bun run build && bunx changeset publish",
     "test": "bunx turbo run test",
     "version": "bunx changeset version"
   },

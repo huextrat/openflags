@@ -1,0 +1,54 @@
+# ------------------------------------------------------------------------------
+# Docker — builds and pushes the all-in-one OpenFlags image to Docker Hub.
+# Triggered on:
+#   1. Every push to main (publishes :latest)
+#   2. Every Git tag matching v* (publishes :1.0.0)
+#
+# Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
+# ------------------------------------------------------------------------------
+
+name: 🐳 Docker
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+jobs:
+  docker:
+    name: 🐳 Build & Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 🏷️ Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/openflags
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=
+
+      - name: 🐳 Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
