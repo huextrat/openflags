@@ -1,11 +1,11 @@
 # OpenFlags — self-hosted in one command
-# From repo root: docker compose -f infra/docker/docker-compose.yml up -d
+# From repo root: docker compose up -d
 # Then open http://localhost:8080 (dashboard + API at /api)
 
 services:
   server:
     build:
-      context: ../..
+      context: .
       dockerfile: infra/docker/Dockerfile.server
     ports:
       - "4000:4000"
@@ -19,7 +19,7 @@ services:
 
   dashboard:
     build:
-      context: ../..
+      context: .
       dockerfile: infra/docker/Dockerfile.dashboard
       args:
         VITE_API_URL: /api

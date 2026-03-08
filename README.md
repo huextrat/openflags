@@ -3,88 +3,70 @@
 </p>
 
 <h1 align="center">OpenFlags</h1>
+
 <p align="center">
-  <strong>Open source, self-hosted feature flags for modern JavaScript applications.</strong>
+  <strong>Fast, self-hosted, edge-ready feature flags for modern teams.</strong>
 </p>
 
 <p align="center">
-  A lightweight alternative to LaunchDarkly — simple, fast, and built for developers.
+  The lightweight alternative to LaunchDarkly — built for React, Bun, and Node.js. 
 </p>
 
 ---
 
 ## ✨ Why OpenFlags?
 
-| Most platforms are… | OpenFlags is…       |
-| ------------------- | ------------------- |
-| 💸 Expensive        | 🆓 Self-hosted      |
-| 🔧 Complex to run   | ⚡ Lightweight      |
-| 🖥️ Backend-heavy    | 📦 JavaScript-first |
+Most feature flag platforms are expensive, enterprise-heavy, and add unnecessary network latency to your app.
 
-**Ideal for:** indie developers · startups · SaaS products · internal tools
+**OpenFlags is different:**
 
-**Works with:** Node.js · React · React Native · Next.js · Vite
+- **Local Evaluation:** Flags are evaluated instantly (`0ms` latency) inside your client SDK.
+- **Edge-Ready:** Cache-Control built-in. Easily hide the SQLite server behind Cloudflare or Vercel.
+- **Self-Hosted:** Full ownership of your audit trails and users inside your own infrastructure.
+- **Progressive Delivery:** Run percentage rollouts, kill switches, and targeted beta tests effortlessly.
 
-**Tooling:** This monorepo uses [Bun](https://bun.sh) for package management and running apps (server, dashboard, examples).
-
----
-
-## 🚀 Features
-
-- **Feature flags** — Toggle features without deploys
-- **Percentage rollouts** — Gradual releases
-- **Local evaluation** — No extra latency
-- **Caching & refresh** — Optional TTL refresh and manual `refresh()` to stay in sync
-- **REST API** — Full control from any stack
-- **JavaScript SDK** — TypeScript-ready
-- **React hooks** — First-class React support
-- **Self-hosted** — Your infra, your data
+**Tech Stack:** `Bun` · `React` · `Tailwind v4` · `SQLite`
 
 ---
 
-## ⚡ Quick Start
+## ⚡ 1-Click Deployment (Docker)
 
-**1. Install [Bun](https://bun.sh)** (runtime + package manager)
+To deploy OpenFlags in production securely on a VPS or cloud instance:
 
-**2. Install dependencies**
+```bash
+# Clone the repository
+git clone https://github.com/huextrat/openflags.git
+cd openflags
+
+# Start the server and dashboard
+docker compose up -d
+```
+
+Open **`http://localhost:8080`**.
+
+> The first user to sign up automatically becomes the **Platform Admin**.
+
+_See [infra/README.md](./infra/README.md) for reverse proxy and production configs._
+
+---
+
+## 🚀 Local Development (Manual)
+
+If you want to contribute, develop, or run natively without Docker:
+
+**1. Install [Bun](https://bun.sh)**
+**2. Install dependencies & Start**
 
 ```bash
 bun install
-```
-
-**3. Start development**
-
-```bash
 bun run dev
 ```
 
-**4. Run server** (API + flag storage)
-
-```bash
-bun run dev:server
-```
-
-**5. Run dashboard** (admin UI)
-
-```bash
-bun run dev:dashboard
-```
+_This starts the Dashboard on `localhost:5173` and the API/Server on `localhost:4000`._
 
 ---
 
-## 🐳 Self-hosted (Docker)
-
-To run OpenFlags on your own server (one URL for dashboard + API, data in a volume):
-
-```bash
-docker compose -f infra/docker/docker-compose.yml up -d
-```
-
-Then open **http://localhost:8080** (or your host). First user to sign up is admin. See **[infra/README.md](./infra/README.md)** for options and production tips.
-
----
-
-## 📖 Usage
+## 📖 SDK Usage
 
 ### JavaScript / TypeScript
 
@@ -95,7 +77,7 @@ const flags = await createClient({
   apiUrl: "http://localhost:4000",
   project: "my-app",
   userId: "user_123",
-  refreshIntervalMs: 60_000, // optional: refetch every 60s
+  refreshIntervalMs: 60_000, // Polls Edge/CDN every 60s
 })
 
 if (flags.isEnabled("new_checkout")) {
@@ -103,66 +85,51 @@ if (flags.isEnabled("new_checkout")) {
 }
 ```
 
-### React
+### React / Next.js
 
-Wrap your app with `OpenFlagsProvider` (it creates the client from `apiUrl` and `project`), then use `useFlag` or `useFlags` in your components:
+Wrap your application with the provider, and use the hook anywhere.
 
 ```tsx
 import { OpenFlagsProvider, useFlag } from "@openflags/react"
 
-// At app root (e.g. main.tsx)
+// 1. Setup Provider
 root.render(
   <OpenFlagsProvider
-    apiUrl="http://localhost:4000"
-    project="my-app"
+    apiUrl="https://flags.mycompany.com"
+    project="frontend-app"
     userId={user?.id}
-    refreshIntervalMs={60_000}
+    refreshIntervalMs={30_000}
   >
     <App />
   </OpenFlagsProvider>
 )
 
-// In any component
-function Checkout() {
-  const newCheckout = useFlag("new_checkout")
-  return newCheckout ? <NewCheckoutFlow /> : <LegacyCheckout />
+// 2. Consume flag
+function App() {
+  const showAI = useFlag("ai_assistant")
+  return showAI ? <AIAssistant /> : <StandardChat />
 }
 ```
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Monorepo Architecture
 
-OpenFlags is built around three parts:
+OpenFlags is structured beautifully as a Turborepo.
 
-| Component     | Role                                             |
-| ------------- | ------------------------------------------------ |
-| **Server**    | Flag storage and REST API                        |
-| **Dashboard** | Admin UI to create and manage flags              |
-| **SDK**       | Client libraries for your apps (JS, React, etc.) |
-
-### Monorepo layout
-
-```
-apps/
-  server      # API + storage
-  dashboard   # Admin UI
-
-packages/
-  sdk-js      # JavaScript/TypeScript SDK
-  sdk-react   # React bindings
-  types       # Shared types
-
-examples/
-  react       # React app example
-```
-
-**Versioning:** [Changesets](https://github.com/changesets/changesets) — run `bun run changeset` when you change a package, then `bun run version` to update versions and changelogs.
+| Package          | Path                 | Description                         |
+| ---------------- | -------------------- | ----------------------------------- |
+| **Server**       | `apps/server`        | `Bun.serve` + SQLite API            |
+| **Dashboard**    | `apps/dashboard`     | React SPA for Flag Management       |
+| **Docs Vitrine** | `apps/docs`          | Next.js Landing + Fumadocs          |
+| **React**        | `packages/sdk-react` | `@openflags/react` Provider & Hooks |
+| **JS**           | `packages/sdk-js`    | Core string-hashing evaluation      |
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contributing & Licensing
 
-Contributions are welcome.
+Contributions to the codebase, SDKs, or Dashboard UI are highly welcome!  
+See **[AGENTS.md](./AGENTS.md)** for AI Agent / Workspace context.
 
-For development setup and conventions, see **[AGENTS.md](./AGENTS.md)**.
+Licensed under MIT.

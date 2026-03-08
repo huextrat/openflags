@@ -11,7 +11,7 @@ The easiest way to run OpenFlags on your own infra is **Docker Compose**: one UR
 From the **repository root**:
 
 ```bash
-docker compose -f infra/docker/docker-compose.yml up -d
+docker compose up -d
 ```
 
 - **Dashboard:** http://localhost:8080
@@ -28,14 +28,14 @@ First visit: sign up with an email and password. The first user is an admin.
 Example with a custom origin:
 
 ```bash
-CORS_ORIGIN=https://flags.example.com docker compose -f infra/docker/docker-compose.yml up -d
+CORS_ORIGIN=https://flags.example.com docker compose up -d
 ```
 
 ## Data
 
 - SQLite is stored in a Docker volume `server_data`.
 - To back up: copy the volume (e.g. from the server container’s `/app/apps/server/data`).
-- To reset: `docker compose -f infra/docker/docker-compose.yml down -v` (removes the volume).
+- To reset: `docker compose down -v` (removes the volume).
 
 ## Build only (no Compose)
 
