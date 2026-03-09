@@ -154,7 +154,7 @@ export default function UsersPage() {
                         />
                       </div>
                     </TextFieldRoot>
-                    <div className="w-full sm:w-[160px] space-y-2">
+                    <div className="w-full sm:w-[160px]">
                       <Label htmlFor="invite-role" className="text-white/60">
                         Role
                       </Label>

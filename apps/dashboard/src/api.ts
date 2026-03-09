@@ -30,6 +30,7 @@ export interface Flag {
   enabled: boolean
   rolloutPercentage: number
   users?: string[]
+  segments?: string[]
 }
 
 export interface CreateFlagInput {
@@ -37,11 +38,31 @@ export interface CreateFlagInput {
   enabled?: boolean
   rolloutPercentage?: number
   users?: string[]
+  segments?: string[]
 }
 
 export interface UpdateFlagInput {
   enabled?: boolean
   rolloutPercentage?: number
+  users?: string[]
+  segments?: string[]
+}
+
+export interface Segment {
+  id: string
+  projectId: string
+  name: string
+  users?: string[]
+  createdAt: string
+}
+
+export interface CreateSegmentInput {
+  name: string
+  users?: string[]
+}
+
+export interface UpdateSegmentInput {
+  name?: string
   users?: string[]
 }
 
@@ -148,6 +169,50 @@ export const api = {
       { method: "DELETE" }
     )
     if (!res.ok) throw new Error("Failed to delete flag")
+  },
+
+  // Segments Methods
+
+  async getSegments(projectIdOrSlug: string): Promise<Segment[]> {
+    const res = await baseFetch(`/projects/${encodeURIComponent(projectIdOrSlug)}/segments`)
+    if (!res.ok) throw new Error("Failed to fetch segments")
+    return res.json()
+  },
+
+  async createSegment(projectIdOrSlug: string, body: CreateSegmentInput): Promise<Segment> {
+    const res = await baseFetch(`/projects/${encodeURIComponent(projectIdOrSlug)}/segments`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error((data as { error?: string }).error ?? "Failed to create segment")
+    }
+    return res.json()
+  },
+
+  async updateSegment(
+    projectId: string,
+    segmentId: string,
+    body: UpdateSegmentInput
+  ): Promise<Segment> {
+    const res = await baseFetch(
+      `/projects/${encodeURIComponent(projectId)}/segments/${encodeURIComponent(segmentId)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }
+    )
+    if (!res.ok) throw new Error("Failed to update segment")
+    return res.json()
+  },
+
+  async deleteSegment(projectId: string, segmentId: string): Promise<void> {
+    const res = await baseFetch(
+      `/projects/${encodeURIComponent(projectId)}/segments/${encodeURIComponent(segmentId)}`,
+      { method: "DELETE" }
+    )
+    if (!res.ok) throw new Error("Failed to delete segment")
   },
 
   async getUsers(): Promise<User[]> {

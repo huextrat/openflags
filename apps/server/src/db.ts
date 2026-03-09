@@ -5,46 +5,6 @@ import { fileURLToPath } from "node:url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const USERS_SCHEMA = `
-  CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('admin', 'developer', 'member')),
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  )
-`
-
-const SESSIONS_SCHEMA = `
-  CREATE TABLE IF NOT EXISTS sessions (
-    id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    expires_at TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  )
-`
-
-const PROJECTS_SCHEMA = `
-  CREATE TABLE IF NOT EXISTS projects (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    slug TEXT NOT NULL UNIQUE,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  )
-`
-
-const FLAGS_SCHEMA = `
-  CREATE TABLE IF NOT EXISTS flags (
-    id TEXT PRIMARY KEY,
-    project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    key TEXT NOT NULL,
-    enabled INTEGER NOT NULL DEFAULT 0,
-    rollout_percentage INTEGER NOT NULL DEFAULT 0,
-    users TEXT,
-    UNIQUE(project_id, key)
-  )
-`
-
 const SCHEMA_VERSION_TABLE = `
   CREATE TABLE IF NOT EXISTS schema_version (
     version INTEGER NOT NULL DEFAULT 0
@@ -65,30 +25,50 @@ function setVersion(db: Database, version: number): void {
   }
 }
 
-type MigrationFn = (db: Database) => void
+/**
+ * Executes a raw SQL script strictly by splitting on semicolons.
+ */
+function runSqlScript(db: Database, script: string): void {
+  const statements = script
+    .split(";")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+  db.transaction(() => {
+    for (const stmt of statements) {
+      db.run(stmt)
+    }
+  })()
+}
 
 /**
- * Migrations run in order at startup. To add a new one: append a function that updates
- * the schema and is idempotent when possible (e.g. IF NOT EXISTS, or check column exists).
- * Version is persisted in schema_version; only migrations with index + 1 > current version run.
+ * Reads all .sql files from the migrations folder in ascending order,
+ * and runs any that have an index (e.g. 1 from "1_init.sql") > current version.
  */
-const MIGRATIONS: MigrationFn[] = [
-  (db) => {
-    db.run(USERS_SCHEMA)
-    db.run(SESSIONS_SCHEMA)
-    db.run(PROJECTS_SCHEMA)
-    db.run(FLAGS_SCHEMA)
-  },
-]
-
 function runMigrations(db: Database): void {
-  let version = getCurrentVersion(db)
-  for (let i = 0; i < MIGRATIONS.length; i++) {
-    const nextVersion = i + 1
-    if (version < nextVersion) {
-      MIGRATIONS[i](db)
-      setVersion(db, nextVersion)
-      version = nextVersion
+  const migrationsDir = path.join(__dirname, "migrations")
+
+  if (!fs.existsSync(migrationsDir)) {
+    return
+  }
+
+  const files = fs
+    .readdirSync(migrationsDir)
+    .filter((f) => f.endsWith(".sql"))
+    .toSorted()
+
+  let currentVersion = getCurrentVersion(db)
+
+  for (const file of files) {
+    const match = file.match(/^(\d+)_.*\.sql$/)
+    if (!match) continue
+
+    const migrationVersion = parseInt(match[1], 10)
+
+    if (migrationVersion > currentVersion) {
+      const script = fs.readFileSync(path.join(migrationsDir, file), "utf-8")
+      runSqlScript(db, script)
+      setVersion(db, migrationVersion)
+      currentVersion = migrationVersion
     }
   }
 }
@@ -113,10 +93,9 @@ export function initDb(): Database {
 /** In-memory DB with same schema; for tests only. */
 export function createMemoryDb(): Database {
   const db = new Database(":memory:")
-  db.run(USERS_SCHEMA)
-  db.run(SESSIONS_SCHEMA)
-  db.run(PROJECTS_SCHEMA)
-  db.run(FLAGS_SCHEMA)
+  db.run(SCHEMA_VERSION_TABLE)
+  db.run("INSERT INTO schema_version (version) VALUES (0)")
+  runMigrations(db)
   return db
 }
 
@@ -149,6 +128,15 @@ export interface FlagRow {
   enabled: number
   rollout_percentage: number
   users: string | null
+  segments: string | null
+}
+
+export interface SegmentRow {
+  id: string
+  project_id: string
+  name: string
+  users: string | null
+  created_at: string
 }
 
 export function rowToFlag(row: FlagRow): {
@@ -157,6 +145,7 @@ export function rowToFlag(row: FlagRow): {
   enabled: boolean
   rolloutPercentage: number
   users?: string[]
+  segments?: string[]
 } {
   return {
     id: row.id,
@@ -164,5 +153,6 @@ export function rowToFlag(row: FlagRow): {
     enabled: row.enabled === 1,
     rolloutPercentage: row.rollout_percentage,
     ...(row.users ? { users: JSON.parse(row.users) as string[] } : {}),
+    ...(row.segments ? { segments: JSON.parse(row.segments) as string[] } : {}),
   }
 }
