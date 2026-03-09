@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "OpenFlags - Lightweight Feature Flags",
     description:
-      "Ship safer with self-hosted feature flags designed for developers and product teams. 0ms local latency.",
+      "Ship faster with self-hosted feature flags for modern product teams. Enjoy zero latency local evaluation and keep data securely in your own stack.",
     url: "https://openflags.dev",
     siteName: "OpenFlags",
     locale: "en_US",
