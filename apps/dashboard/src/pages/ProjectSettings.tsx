@@ -1,34 +1,56 @@
-import * as Form from "@radix-ui/react-form"
-import { motion } from "framer-motion"
-import { Trash2, AlertTriangle, Settings2, Code, Shield } from "lucide-react"
-import { useEffect, useState } from "react"
+import * as Tabs from "@radix-ui/react-tabs"
+import { useEffect, useState, useCallback } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
-import { api, type Project } from "@/api"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { TextFieldRoot, TextFieldInput } from "@/components/ui/text-field"
+import { api, type Project, type Segment } from "@/api"
+import { EditSegmentDialog } from "@/components/segments/EditSegmentDialog"
+import { SegmentList } from "@/components/segments/SegmentList"
+import { GeneralSettings } from "@/components/settings/GeneralSettings"
 import { useAuth } from "@/context/AuthContext"
 import { useProjects } from "@/context/ProjectsContext"
+
+function parseUsersInput(input: string): string[] {
+  return input
+    .split(/[\n,]/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
 
 export default function ProjectSettings() {
   const { projectId } = useParams<{ projectId: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
   const { refreshProjects } = useProjects()
+
   const [project, setProject] = useState<Project | null>(null)
+  const [segments, setSegments] = useState<Segment[]>([])
+
+  // Project Delete UI
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteConfirmSlug, setDeleteConfirmSlug] = useState("")
 
+  // Segment Create UI
+  const [createSegmentDialogOpen, setCreateSegmentDialogOpen] = useState(false)
+  const [newSegmentName, setNewSegmentName] = useState("")
+  const [newSegmentUsersInput, setNewSegmentUsersInput] = useState("")
+  const [segmentError, setSegmentError] = useState<string | null>(null)
+
+  // Segment Edit UI
+  const [editSegment, setEditSegment] = useState<Segment | null>(null)
+  const [editSegmentName, setEditSegmentName] = useState("")
+  const [editSegmentUsersInput, setEditSegmentUsersInput] = useState("")
+
   const isPlatformAdmin = user?.role === "admin"
+  const canEditSegments = user?.role === "admin" || user?.role === "developer"
+
+  const loadSegments = useCallback(() => {
+    if (!projectId) return
+    api
+      .getSegments(projectId)
+      .then(setSegments)
+      .catch(() => setSegments([]))
+  }, [projectId])
 
   useEffect(() => {
     if (!projectId) return
@@ -36,7 +58,9 @@ export default function ProjectSettings() {
       .getProject(projectId)
       .then(setProject)
       .catch(() => setProject(null))
-  }, [projectId])
+
+    loadSegments()
+  }, [projectId, loadSegments])
 
   async function handleDeleteProject() {
     if (!projectId || !project || deleteConfirmSlug !== project.slug) return
@@ -52,173 +76,142 @@ export default function ProjectSettings() {
     }
   }
 
+  async function handleCreateSegment(e: React.FormEvent) {
+    e.preventDefault()
+    if (!projectId) return
+    setSegmentError(null)
+    try {
+      const users = parseUsersInput(newSegmentUsersInput)
+      const segment = await api.createSegment(projectId, {
+        name: newSegmentName,
+        ...(users.length > 0 && { users }),
+      })
+      setSegments((prev) => [segment, ...prev])
+      setCreateSegmentDialogOpen(false)
+      setNewSegmentName("")
+      setNewSegmentUsersInput("")
+      toast.success("Segment created")
+    } catch (err) {
+      setSegmentError(err instanceof Error ? err.message : "Failed to create segment")
+    }
+  }
+
+  function openEditSegment(segment: Segment) {
+    setEditSegment(segment)
+    setEditSegmentName(segment.name)
+    setEditSegmentUsersInput((segment.users ?? []).join("\n"))
+    setSegmentError(null)
+  }
+
+  async function handleEditSegmentSave(e: React.FormEvent) {
+    e.preventDefault()
+    if (!projectId || !editSegment) return
+    setSegmentError(null)
+    try {
+      const users = parseUsersInput(editSegmentUsersInput)
+      const updated = await api.updateSegment(projectId, editSegment.id, {
+        name: editSegmentName,
+        users,
+      })
+      setSegments((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
+      setEditSegment(null)
+      toast.success("Segment updated")
+    } catch (err) {
+      setSegmentError(err instanceof Error ? err.message : "Failed to update segment")
+    }
+  }
+
+  async function handleDeleteSegment(segmentId: string) {
+    if (!projectId) return
+    if (!confirm("Delete this segment? Flags using it will no longer match its users.")) return
+
+    setSegments((prev) => prev.filter((s) => s.id !== segmentId))
+
+    try {
+      await api.deleteSegment(projectId, segmentId)
+      toast.success("Segment deleted")
+    } catch {
+      loadSegments()
+      toast.error("Failed to delete segment")
+    }
+  }
+
   if (!projectId) return null
 
   return (
-    <div className="space-y-8 pb-12 relative">
+    <div className="space-y-8 pb-12 relative max-w-5xl mx-auto">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white mb-1">Project Settings</h2>
           <p className="text-white/50 text-sm">
-            Manage configuration and dangerous actions for {project?.name || "this project"}.
+            Manage configuration, environments, and user segments for{" "}
+            {project?.name || "this project"}.
           </p>
         </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="grid gap-6 md:grid-cols-2"
-      >
-        <Card className="md:col-span-2 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          <CardHeader>
-            <div className="flex items-center gap-3 mb-1">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/70">
-                <Settings2 className="h-5 w-5" />
-              </div>
-              <div>
-                <CardTitle>General Information</CardTitle>
-                <CardDescription>Basic details about this project.</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6 pt-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-1 p-4 rounded-xl border border-white/5 bg-black/20">
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
-                  Project Name
-                </p>
-                <p className="text-lg font-medium text-white">{project?.name || "Loading..."}</p>
-              </div>
-              <div className="space-y-1 p-4 rounded-xl border border-white/5 bg-black/20">
-                <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
-                  Project Slug
-                </p>
-                <div className="flex items-center gap-2">
-                  <Code className="h-4 w-4 text-violet-400" />
-                  <p className="text-lg font-mono text-white/90">{project?.slug || "..."}</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs.Root defaultValue="general" className="w-full relative z-10">
+        <Tabs.List
+          className="flex w-full mb-8 border-b border-white/10"
+          aria-label="Project Settings"
+        >
+          <Tabs.Trigger
+            value="general"
+            className="px-4 py-3 text-sm font-medium text-white/50 hover:text-white data-[state=active]:text-violet-400 data-[state=active]:border-b-2 data-[state=active]:border-violet-500 transition-colors bg-transparent border-0 outline-none cursor-pointer"
+          >
+            General
+          </Tabs.Trigger>
+          <Tabs.Trigger
+            value="segments"
+            className="px-4 py-3 text-sm font-medium text-white/50 hover:text-white data-[state=active]:text-violet-400 data-[state=active]:border-b-2 data-[state=active]:border-violet-500 transition-colors bg-transparent border-0 outline-none cursor-pointer"
+          >
+            User Segments
+          </Tabs.Trigger>
+        </Tabs.List>
 
-        {isPlatformAdmin && project && (
-          <Card className="md:col-span-2 border-red-500/20 bg-red-500/[0.02] overflow-hidden relative group shadow-[0_4px_30px_rgba(239,68,68,0.05)]">
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <Tabs.Content value="general" className="outline-none">
+          <GeneralSettings
+            project={project}
+            isPlatformAdmin={isPlatformAdmin}
+            deleteDialogOpen={deleteDialogOpen}
+            setDeleteDialogOpen={setDeleteDialogOpen}
+            deleteConfirmSlug={deleteConfirmSlug}
+            setDeleteConfirmSlug={setDeleteConfirmSlug}
+            handleDeleteProject={handleDeleteProject}
+          />
+        </Tabs.Content>
 
-            <CardHeader className="pb-2">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                  <Shield className="h-5 w-5" />
-                </div>
-                <div>
-                  <CardTitle className="text-red-400">Danger Zone</CardTitle>
-                  <CardDescription className="text-white/50">
-                    Irreversible, destructive actions.
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-5 rounded-xl border border-red-500/10 bg-black/40">
-                <div className="space-y-1 max-w-lg">
-                  <h4 className="font-medium text-white">Delete Project</h4>
-                  <p className="text-sm text-white/50 leading-relaxed">
-                    Permanently delete this project and all of its feature flags. This action is not
-                    reversible and will immediately break any apps depending on these flags.
-                  </p>
-                </div>
-                <Button
-                  variant="destructive"
-                  className="gap-2 shrink-0 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] transition-all"
-                  onClick={() => {
-                    setDeleteConfirmSlug("")
-                    setDeleteDialogOpen(true)
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete project
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <Tabs.Content value="segments" className="outline-none">
+          <SegmentList
+            segments={segments}
+            canEditSegments={canEditSegments}
+            createSegmentDialogOpen={createSegmentDialogOpen}
+            setCreateSegmentDialogOpen={setCreateSegmentDialogOpen}
+            newSegmentName={newSegmentName}
+            setNewSegmentName={setNewSegmentName}
+            newSegmentUsersInput={newSegmentUsersInput}
+            setNewSegmentUsersInput={setNewSegmentUsersInput}
+            segmentError={segmentError}
+            handleCreateSegment={handleCreateSegment}
+            openEditSegment={openEditSegment}
+            handleDeleteSegment={handleDeleteSegment}
+          />
+        </Tabs.Content>
+      </Tabs.Root>
 
-        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent className="border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.15)]">
-            <Form.Root onSubmit={(e) => e.preventDefault()}>
-              <DialogHeader>
-                <div className="mx-auto mt-2 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 text-red-400 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
-                  <AlertTriangle className="h-8 w-8" strokeWidth={1.5} />
-                </div>
-                <DialogTitle className="text-center text-2xl text-red-400">
-                  Delete project
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="space-y-6 mt-2">
-                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-center">
-                  <p className="text-sm text-red-200/80 leading-relaxed">
-                    This action will permanently delete{" "}
-                    <strong className="text-red-100 font-mono tracking-tight">
-                      {project?.name}
-                    </strong>{" "}
-                    and remove all associated data.
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-sm text-white/70 text-center">
-                    To confirm, please type the project slug below:
-                  </p>
-                  <div className="bg-black/30 p-3 rounded-xl border border-white/5 text-center mb-4">
-                    <strong className="font-mono text-lg text-white/90 select-all">
-                      {project?.slug}
-                    </strong>
-                  </div>
-
-                  <TextFieldRoot name="delete-confirm">
-                    <TextFieldInput
-                      id="delete-confirm"
-                      type="text"
-                      value={deleteConfirmSlug}
-                      onChange={(e) => setDeleteConfirmSlug(e.target.value)}
-                      placeholder={project?.slug}
-                      className="font-mono text-center border-red-500/30 focus:border-red-500 focus:ring-red-500/20"
-                      autoComplete="off"
-                    />
-                  </TextFieldRoot>
-                </div>
-              </div>
-
-              <DialogFooter className="mt-8 border-t border-white/10 pt-6">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="hover:bg-white/5"
-                  onClick={() => setDeleteDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  className="bg-red-500 hover:bg-red-600 shadow-[0_0_20px_rgba(239,68,68,0.4)]"
-                  disabled={!project || deleteConfirmSlug !== project.slug}
-                  onClick={handleDeleteProject}
-                >
-                  Yes, delete project
-                </Button>
-              </DialogFooter>
-            </Form.Root>
-          </DialogContent>
-        </Dialog>
-      </motion.div>
+      {/* Edit Segment Dialog */}
+      <EditSegmentDialog
+        editSegment={editSegment}
+        setEditSegment={setEditSegment}
+        editSegmentName={editSegmentName}
+        setEditSegmentName={setEditSegmentName}
+        editSegmentUsersInput={editSegmentUsersInput}
+        setEditSegmentUsersInput={setEditSegmentUsersInput}
+        segmentError={segmentError}
+        handleEditSegmentSave={handleEditSegmentSave}
+      />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import * as auth from "./auth.js"
 import { initDb } from "./db.js"
 import * as flagsProject from "./flagsProject.js"
 import * as projects from "./projects.js"
+import * as segmentsProject from "./segmentsProject.js"
 import * as users from "./users.js"
 
 const port = Number(process.env.PORT) || 4000
@@ -235,6 +236,66 @@ const server = Bun.serve({
             db,
             projectId,
             flagId,
+            authResult.user.id
+          )
+          return jsonResponse(result.body, result.status)
+        }
+      }
+
+      // ----- Project segments: GET/POST/PATCH/DELETE require auth -----
+      const segmentsListMatch = routePath?.match(/^\/projects\/([^/]+)\/segments$/)
+      if (segmentsListMatch) {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+
+        const projectIdOrSlug = segmentsListMatch[1]
+
+        if (req.method === "GET") {
+          const result = await segmentsProject.handleSegmentsList(
+            db,
+            projectIdOrSlug,
+            authResult.user.id
+          )
+          return jsonResponse(result.body, result.status)
+        }
+
+        if (req.method === "POST") {
+          const body = (await req.json()) as import("@openflagsdev/types").CreateSegmentInput
+          const result = await segmentsProject.handleSegmentCreate(
+            db,
+            projectIdOrSlug,
+            authResult.user.id,
+            body
+          )
+          return jsonResponse(result.body, result.status)
+        }
+      }
+
+      const segmentDetailMatch = routePath?.match(/^\/projects\/([^/]+)\/segments\/([^/]+)$/)
+      if (segmentDetailMatch) {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+
+        const projectId = segmentDetailMatch[1]
+        const segmentId = segmentDetailMatch[2]
+
+        if (req.method === "PATCH") {
+          const body = (await req.json()) as import("@openflagsdev/types").UpdateSegmentInput
+          const result = await segmentsProject.handleSegmentUpdate(
+            db,
+            projectId,
+            segmentId,
+            authResult.user.id,
+            body
+          )
+          return jsonResponse(result.body, result.status)
+        }
+
+        if (req.method === "DELETE") {
+          const result = await segmentsProject.handleSegmentDelete(
+            db,
+            projectId,
+            segmentId,
             authResult.user.id
           )
           return jsonResponse(result.body, result.status)
