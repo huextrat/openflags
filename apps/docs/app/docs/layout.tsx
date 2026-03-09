@@ -4,6 +4,9 @@ import { Flag } from "lucide-react"
 
 import { source } from "@/lib/source"
 
+export const dynamicParams = false
+export const revalidate = false
+
 function Logo() {
   return (
     <div className="flex items-center gap-3 font-semibold text-white transition-opacity group">

@@ -1,5 +1,5 @@
 {
   "title": "Documentation",
-  "pages": ["index", "quickstart", "concepts", "sdks", "deployment"],
+  "pages": ["index", "quickstart", "dashboard", "concepts", "sdks", "deployment"],
   "defaultOpen": true
 }
