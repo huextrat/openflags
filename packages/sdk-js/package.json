@@ -18,7 +18,7 @@
   "author": "Hugo Extrat <extrat.h@gmail.com> (https://github.com/huextrat)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/huextrat/openflags.git",
+    "url": "git+https://github.com/huextrat/openflags.git",
     "directory": "packages/sdk-js"
   },
   "files": [
@@ -28,6 +28,10 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "bun test"
