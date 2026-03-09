@@ -1,5 +1,12 @@
 # @openflagsdev/js
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [9858a51]
+  - @openflagsdev/types@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@openflagsdev/types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared TypeScript types for OpenFlags (Flag, CreateFlagInput, UpdateFlagInput).",
   "keywords": [
     "feature-flags",

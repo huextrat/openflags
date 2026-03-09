@@ -1,6 +1,6 @@
 {
   "name": "@openflagsdev/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React hooks and provider for OpenFlags — useFlag, useFlags, OpenFlagsProvider.",
   "keywords": [
     "feature-flags",
