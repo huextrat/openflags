@@ -152,6 +152,7 @@ OpenFlags is structured beautifully as a Turborepo.
 ## 🤝 Contributing & Licensing
 
 Contributions to the codebase, SDKs, or Dashboard UI are highly welcome!  
+Please read our **[Contributing Guide](./CONTRIBUTING.md)** to get started.  
 See **[AGENTS.md](./AGENTS.md)** for AI Agent / Workspace context.
 
 Licensed under MIT.
