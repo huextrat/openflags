@@ -1,0 +1,63 @@
+---
+title: OpenFlags Dashboard
+description: Learn how to manage projects, flags, and user segments using the OpenFlags dashboard.
+---
+
+The OpenFlags Dashboard provides a user-friendly interface to manage all your feature flags, projects, and environments in one place.
+
+## Projects Management
+
+When you log into the dashboard, you will see a list of your projects. Each project acts as an isolated environment for your feature flags.
+
+![Projects Overview](/images/dashboard/projects.webp)
+
+From the main screen, you can:
+
+- **Create a new project**: Click "Create Project" and define a name and a unique slug.
+- **Select a project**: Click on a project card to manage its flags and settings.
+
+## Feature Flags Management
+
+Inside a project, the **Flags** tab is where you define and control your feature flags.
+
+![Project Flags](/images/dashboard/flags.webp)
+
+To create a new flag, click **Create Flag**. You will need to specify:
+
+- **Flag Key**: The unique identifier used in your code (e.g., `new_checkout_flow`).
+- **Default state**: Whether the flag is active (enabled) or inactive (disabled) immediately upon creation.
+
+### Advanced Rollout Rules
+
+When creating or editing a flag, you can configure advanced targeting rules:
+
+![Flag Edit](/images/dashboard/create-flag.webp)
+
+1. **Percentage Rollout**: Gradually roll out a feature to a percentage of your users (e.g., 20%).
+2. **User Targeting**: Add specific User IDs that should always receive the `true` evaluation for this flag.
+3. **User Segments**: Select predefined groups of users (e.g., "Beta Testers") to enable the flag for them automatically.
+
+## User Segments
+
+User Segments allow you to define reusable lists of User IDs to quickly target groups in your feature flags. This is perfect for managing internal testers, beta users, or specific customer tiers.
+
+To manage segments, navigate to the **Settings** tab of your project and select **User Segments**.
+
+![User Segments](/images/dashboard/segments.webp)
+
+### Creating a Segment
+
+1. Click **Create Segment**.
+2. Give your segment a name, like "Premium Users".
+3. Paste a comma or newline-separated list of User IDs.
+4. Click **Create Segment**.
+
+![Create Segment](/images/dashboard/create-segment.webp)
+
+Once created, this segment will be available to select when editing any feature flag in this project!
+
+## General Settings
+
+In the **General** settings tab, you can find your project's `slug`, which is required to initialize the OpenFlags SDK in your applications.
+
+Platform Administrators also have access to the **Danger Zone**, where projects can be permanently deleted.
