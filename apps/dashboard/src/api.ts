@@ -67,6 +67,12 @@ export interface UpdateSegmentInput {
 }
 
 export const api = {
+  async getAuthConfig(): Promise<{ signupAllowed: boolean }> {
+    const res = await baseFetch("/auth/config")
+    const data = await res.json()
+    return data as { signupAllowed: boolean }
+  },
+
   async getMe(): Promise<{ user: User } | { error: string }> {
     const res = await baseFetch("/auth/me")
     const data = await res.json()

@@ -231,27 +231,40 @@ export default function UsersPage() {
                       <div className="flex items-center justify-between sm:justify-end gap-3 border-t border-white/5 sm:border-0 pt-3 sm:pt-0">
                         {isPlatformAdmin ? (
                           <>
-                            <Select value={u.role} onValueChange={(v) => handleRoleChange(u.id, v)}>
-                              <SelectTrigger
+                            {u.id === currentUser?.id ? (
+                              <span
                                 className={cn(
-                                  "h-9 w-[130px] border-white/10 hover:bg-white/5 transition-colors capitalize text-xs font-medium",
-                                  u.role === "admin" ? "text-amber-400" : "text-white/80"
+                                  "text-sm capitalize px-3 py-1 rounded-full border h-9 inline-flex items-center",
+                                  isAdmin
+                                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                    : "bg-white/5 text-white/60 border-white/10"
                                 )}
                               >
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="border-white/10 bg-[#09090b]/90 backdrop-blur-xl">
-                                {PLATFORM_ROLES.map((r) => (
-                                  <SelectItem key={r} value={r} className="capitalize text-xs">
-                                    {r === "admin" ? (
-                                      <span className="text-amber-400">{r}</span>
-                                    ) : (
-                                      r
-                                    )}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                                {u.role}
+                              </span>
+                            ) : (
+                              <Select value={u.role} onValueChange={(v) => handleRoleChange(u.id, v)}>
+                                <SelectTrigger
+                                  className={cn(
+                                    "h-9 w-[130px] border-white/10 hover:bg-white/5 transition-colors capitalize text-xs font-medium",
+                                    u.role === "admin" ? "text-amber-400" : "text-white/80"
+                                  )}
+                                >
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="border-white/10 bg-[#09090b]/90 backdrop-blur-xl">
+                                  {PLATFORM_ROLES.map((r) => (
+                                    <SelectItem key={r} value={r} className="capitalize text-xs">
+                                      {r === "admin" ? (
+                                        <span className="text-amber-400">{r}</span>
+                                      ) : (
+                                        r
+                                      )}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            )}
 
                             {u.id !== currentUser?.id ? (
                               <Button

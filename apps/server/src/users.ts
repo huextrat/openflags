@@ -65,13 +65,30 @@ export async function updateUserRole(
   if (!auth.requirePlatformAdmin(db, userId)) {
     return { body: { error: "Forbidden" }, status: 403 }
   }
+  if (targetUserId === userId) {
+    return { body: { error: "You cannot change your own role" }, status: 400 }
+  }
   const role =
     body.role === "admin" || body.role === "developer" || body.role === "member"
       ? body.role
       : undefined
   if (!role) return { body: { error: "role must be admin, developer, or member" }, status: 400 }
-  const result = db.run("UPDATE users SET role = ? WHERE id = ?", [role, targetUserId])
-  if (result.changes === 0) return { body: { error: "User not found" }, status: 404 }
+  const target = db.query("SELECT role FROM users WHERE id = ?").get(targetUserId) as
+    | { role: string }
+    | undefined
+  if (!target) return { body: { error: "User not found" }, status: 404 }
+  if (target.role === "admin" && role !== "admin") {
+    const adminCount = db.query("SELECT COUNT(*) as c FROM users WHERE role = 'admin'").get() as {
+      c: number
+    }
+    if (adminCount.c <= 1) {
+      return {
+        body: { error: "There must be at least one admin. Promote another user to admin first." },
+        status: 400,
+      }
+    }
+  }
+  db.run("UPDATE users SET role = ? WHERE id = ?", [role, targetUserId])
   const row = db.query("SELECT id, email, role FROM users WHERE id = ?").get(targetUserId) as {
     id: string
     email: string
