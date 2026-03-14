@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "OpenFlags",
-    description: "Launch faster, de-risk releases, and keep ownership in your stack.",
+    description: "Fast, self-hosted, edge-ready feature flags for modern teams.",
     creator: "@huextrat",
     images: ["/og-image.png"],
   },

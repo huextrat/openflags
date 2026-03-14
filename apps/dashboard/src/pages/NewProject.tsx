@@ -128,7 +128,7 @@ export default function NewProject() {
                       setName(v)
                       setSlug((prev) => (prev === slugify(name) || !prev ? slugify(v) : prev))
                     }}
-                    placeholder="e.g. Acme Corp Frontend"
+                    placeholder="e.g. OpenFlags Frontend"
                     className="h-12 text-lg transition-shadow focus:shadow-[0_0_20px_rgba(139,92,246,0.15)] bg-white/[0.03]"
                     required
                     autoFocus
@@ -147,7 +147,7 @@ export default function NewProject() {
                       type="text"
                       value={slug}
                       onChange={(e) => setSlug(e.target.value)}
-                      placeholder="acme-corp-frontend"
+                      placeholder="openflags-frontend"
                       className="h-11 pl-10 font-mono text-sm tracking-wide bg-white/[0.02]"
                     />
                   </div>
