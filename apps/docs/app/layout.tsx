@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { RootProvider } from "fumadocs-ui/provider/next"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import "./global.css"
 
@@ -85,6 +87,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           {children}
         </RootProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
