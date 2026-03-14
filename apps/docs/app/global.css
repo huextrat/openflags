@@ -31,6 +31,17 @@
   --color-fd-accent: hsla(0, 0%, 82%, 50%);
   --color-fd-accent-foreground: hsl(0, 0%, 9%);
   --color-fd-ring: hsl(258, 90%, 66%);
+
+  --animate-shimmer: shimmer 3s linear infinite;
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }
 
 .dark {
