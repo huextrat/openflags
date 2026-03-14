@@ -1,6 +1,6 @@
 {
   "name": "@openflagsdev/dashboard",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "description": "OpenFlags admin UI — manage projects and feature flags.",
   "keywords": [
