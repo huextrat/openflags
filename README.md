@@ -2,6 +2,14 @@
   <img src="https://img.shields.io/badge/OpenFlags-feature%20flags-6366f1?style=for-the-badge&labelColor=1e1b4b" alt="OpenFlags" />
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/license/huextrat/openflags?style=flat-square&color=6366f1" alt="License" />
+  <img src="https://img.shields.io/badge/Bun-%3E%3D1.0.0-fbf0df?style=flat-square&logo=bun&logoColor=000" alt="Bun" />
+  <img src="https://img.shields.io/github/stars/huextrat/openflags?style=flat-square&color=6366f1" alt="Stars" />
+  <img src="https://img.shields.io/github/forks/huextrat/openflags?style=flat-square&color=6366f1" alt="Forks" />
+  <img src="https://img.shields.io/badge/PRs-welcome-6366f1?style=flat-square" alt="PRs Welcome" />
+</p>
+
 <h1 align="center">OpenFlags</h1>
 
 <p align="center">
@@ -10,6 +18,12 @@
 
 <p align="center">
   The lightweight alternative to LaunchDarkly — built for React, Bun, and Node.js. 
+</p>
+
+<p align="center">
+  <a href="https://railway.com/deploy/IOxrOx?referralCode=Xxs5kf&utm_medium=integration&utm_source=template&utm_campaign=generic" target="_blank" rel="noopener noreferrer">
+    <img src="https://railway.app/button.svg" alt="Deploy on Railway" height="30" />
+  </a>
 </p>
 
 ---
