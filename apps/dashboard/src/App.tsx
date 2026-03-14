@@ -4,6 +4,7 @@ import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import { AuthProvider } from "./context/AuthContext"
 import { ProjectsProvider } from "./context/ProjectsContext"
+import AccountSettings from "./pages/AccountSettings"
 import Login from "./pages/Login"
 import NewProject from "./pages/NewProject"
 import ProjectFlags from "./pages/ProjectFlags"
@@ -34,6 +35,7 @@ function App() {
             <Route path="projects/new" element={<NewProject />} />
             <Route path="projects/:projectId" element={<ProjectFlags />} />
             <Route path="projects/:projectId/settings" element={<ProjectSettings />} />
+            <Route path="account" element={<AccountSettings />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

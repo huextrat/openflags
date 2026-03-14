@@ -1,9 +1,10 @@
 import * as Form from "@radix-ui/react-form"
 import { motion } from "framer-motion"
 import { Mail, Lock, Flag, ArrowRight } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 
+import { api } from "@/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { TextFieldRoot, TextFieldLabel, TextFieldInput } from "@/components/ui/text-field"
@@ -14,6 +15,18 @@ export default function Signup() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [signupAllowed, setSignupAllowed] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    api
+      .getAuthConfig()
+      .then((c) => setSignupAllowed(c.signupAllowed))
+      .catch(() => setSignupAllowed(false))
+  }, [])
+
+  useEffect(() => {
+    if (signupAllowed === false) navigate("/login", { replace: true })
+  }, [signupAllowed, navigate])
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
@@ -22,6 +35,16 @@ export default function Signup() {
   }
 
   if (user) return <Navigate to="/" replace />
+  if (signupAllowed === false || signupAllowed === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#09090b]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+          <p className="text-sm font-medium text-white/50 tracking-widest uppercase">Loading...</p>
+        </div>
+      </div>
+    )
+  }
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#09090b]">

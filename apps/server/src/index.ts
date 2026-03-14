@@ -68,7 +68,7 @@ const server = Bun.serve({
 
       // ----- Serve Dashboard (embedded mode) -----
       if (isEmbedded && routePath === null) {
-        // Try to serve a static file from the dashboard build
+        // Try to serve a static file from the dashboard build (always allow: assets, favicon, etc.)
         const filePath = join(dashboardDir, pathname)
         const file = Bun.file(filePath)
         if (await file.exists()) {
@@ -83,7 +83,19 @@ const server = Bun.serve({
             },
           })
         }
-        // SPA fallback: serve index.html for client-side routing
+        // SPA fallback: require auth for dashboard routes except login/signup
+        const publicPaths = ["/login", "/signup"]
+        const isPublicPath = publicPaths.some((p) => pathname === p || pathname.startsWith(p + "?"))
+        if (!isPublicPath) {
+          const sessionUser = await auth.getSessionUser(db, req)
+          if (!sessionUser) {
+            const loginUrl = new URL("/login", url.origin)
+            return new Response(null, {
+              status: 302,
+              headers: { Location: loginUrl.pathname + url.search, ...corsHeaders() },
+            })
+          }
+        }
         const indexPath = join(dashboardDir, "index.html")
         const indexFile = Bun.file(indexPath)
         if (await indexFile.exists()) {
@@ -95,8 +107,17 @@ const server = Bun.serve({
       }
 
       // ----- Auth -----
+      if (routePath === "/auth/config" && req.method === "GET") {
+        const existingCount = db.query("SELECT COUNT(*) as c FROM users").get() as { c: number }
+        const signupAllowed = existingCount.c === 0
+        return jsonResponse({ signupAllowed }, 200)
+      }
       if (routePath === "/auth/signup" && req.method === "POST") {
         const body = (await req.json()) as { email?: string; password?: string }
+        const existingCount = db.query("SELECT COUNT(*) as c FROM users").get() as { c: number }
+        if (existingCount.c > 0) {
+          return jsonResponse({ error: "Signup is disabled. Ask an admin to invite you." }, 403)
+        }
         const result = await auth.signup(db, body)
         const headers: HeadersInit = result.sessionId
           ? { "Set-Cookie": auth.setSessionCookieHeader(result.sessionId) }
@@ -124,6 +145,13 @@ const server = Bun.serve({
           { user: { id: user.id, email: user.email, role: user.role ?? "member" } },
           200
         )
+      }
+      if (routePath === "/auth/password" && req.method === "PATCH") {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+        const body = (await req.json()) as { oldPassword?: string; newPassword?: string }
+        const result = await auth.changePassword(db, authResult.user.id, body)
+        return jsonResponse(result.body, result.status)
       }
 
       // ----- Global users (platform admin only) -----

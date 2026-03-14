@@ -67,6 +67,12 @@ export interface UpdateSegmentInput {
 }
 
 export const api = {
+  async getAuthConfig(): Promise<{ signupAllowed: boolean }> {
+    const res = await baseFetch("/auth/config")
+    const data = await res.json()
+    return data as { signupAllowed: boolean }
+  },
+
   async getMe(): Promise<{ user: User } | { error: string }> {
     const res = await baseFetch("/auth/me")
     const data = await res.json()
@@ -96,6 +102,19 @@ export const api = {
 
   async logout(): Promise<void> {
     await baseFetch("/auth/logout", { method: "POST" })
+  },
+
+  async changePassword(
+    oldPassword: string,
+    newPassword: string
+  ): Promise<{ error?: string; ok?: boolean }> {
+    const res = await baseFetch("/auth/password", {
+      method: "PATCH",
+      body: JSON.stringify({ oldPassword, newPassword }),
+    })
+    const data = await res.json()
+    if (!res.ok) return { error: (data as { error?: string }).error ?? "Failed to change password" }
+    return data as { ok: boolean }
   },
 
   async getProjects(): Promise<Project[]> {

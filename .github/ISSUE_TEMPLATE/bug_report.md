@@ -11,6 +11,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. ...
 2. ...
 
@@ -18,6 +19,7 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Environment Info**
+
 - **OpenFlags Version**: (e.g., v1.0.0 or commit hash)
 - **SDK**: (e.g., @openflagsdev/js, @openflagsdev/react)
 - **SDK Version**:

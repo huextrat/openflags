@@ -9,6 +9,7 @@ By participating in this project, you agree to abide by our Code of Conduct. (In
 ## Prerequisites
 
 OpenFlags is a **Bun** monorepo. You will need:
+
 - [Bun](https://bun.sh) installed on your machine.
 - Docker (optional, for testing production builds).
 
@@ -30,6 +31,7 @@ OpenFlags is a **Bun** monorepo. You will need:
 ### Running Locally
 
 To start the development environment (Dashboard + API Server) in parallel:
+
 ```bash
 bun run dev
 ```
@@ -40,6 +42,7 @@ bun run dev
 ### Testing
 
 Run all tests across the monorepo:
+
 ```bash
 bun run test
 ```

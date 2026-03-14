@@ -144,3 +144,40 @@ export async function logout(
   }
   return { body: { ok: true }, status: 200 }
 }
+
+export async function changePassword(
+  db: Database,
+  userId: string,
+  body: { oldPassword?: string; newPassword?: string }
+): Promise<{ body: unknown; status: number }> {
+  const oldPassword = body.oldPassword
+  const newPassword = body.newPassword
+
+  if (!oldPassword) return { body: { error: "oldPassword is required" }, status: 400 }
+  if (!newPassword || newPassword.length < 8) {
+    return { body: { error: "newPassword must be at least 8 characters" }, status: 400 }
+  }
+
+  const user = db.query("SELECT password_hash FROM users WHERE id = ?").get(userId) as
+    | { password_hash: string }
+    | undefined
+
+  if (!user) {
+    return { body: { error: "User not found" }, status: 404 }
+  }
+
+  const valid = await Bun.password.verify(oldPassword, user.password_hash)
+  if (!valid) {
+    return { body: { error: "Incorrect old password" }, status: 401 }
+  }
+
+  const newHash = await Bun.password.hash(newPassword, {
+    algorithm: "argon2id",
+    memoryCost: 4,
+    timeCost: 3,
+  })
+
+  db.run("UPDATE users SET password_hash = ? WHERE id = ?", [newHash, userId])
+
+  return { body: { ok: true }, status: 200 }
+}

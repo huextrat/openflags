@@ -1,9 +1,10 @@
 import * as Form from "@radix-ui/react-form"
 import { motion } from "framer-motion"
 import { Mail, Lock, LogIn, ArrowRight } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router-dom"
 
+import { api } from "@/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { TextFieldRoot, TextFieldLabel, TextFieldInput } from "@/components/ui/text-field"
@@ -14,6 +15,14 @@ export default function Login() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [signupAllowed, setSignupAllowed] = useState(false)
+
+  useEffect(() => {
+    api
+      .getAuthConfig()
+      .then((c) => setSignupAllowed(c.signupAllowed))
+      .catch(() => setSignupAllowed(false))
+  }, [])
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault()
@@ -137,17 +146,19 @@ export default function Login() {
             </Form.Root>
           </CardContent>
 
-          <div className="border-t border-white/5 bg-white/[0.02] p-6 text-center">
-            <p className="text-sm text-white/50">
-              Don't have an account?{" "}
-              <Link
-                to="/signup"
-                className="font-semibold text-white hover:text-violet-300 transition-colors"
-              >
-                Sign up
-              </Link>
-            </p>
-          </div>
+          {signupAllowed && (
+            <div className="border-t border-white/5 bg-white/[0.02] p-6 text-center">
+              <p className="text-sm text-white/50">
+                Don't have an account?{" "}
+                <Link
+                  to="/signup"
+                  className="font-semibold text-white hover:text-violet-300 transition-colors"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </div>
+          )}
         </Card>
       </motion.div>
     </div>
