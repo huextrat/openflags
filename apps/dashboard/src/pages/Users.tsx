@@ -243,7 +243,10 @@ export default function UsersPage() {
                                 {u.role}
                               </span>
                             ) : (
-                              <Select value={u.role} onValueChange={(v) => handleRoleChange(u.id, v)}>
+                              <Select
+                                value={u.role}
+                                onValueChange={(v) => handleRoleChange(u.id, v)}
+                              >
                                 <SelectTrigger
                                   className={cn(
                                     "h-9 w-[130px] border-white/10 hover:bg-white/5 transition-colors capitalize text-xs font-medium",

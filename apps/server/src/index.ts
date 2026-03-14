@@ -108,26 +108,15 @@ const server = Bun.serve({
 
       // ----- Auth -----
       if (routePath === "/auth/config" && req.method === "GET") {
-        const disableSignup =
-          process.env.OPENFLAGS_DISABLE_SIGNUP !== "false" &&
-          process.env.OPENFLAGS_DISABLE_SIGNUP !== "0"
         const existingCount = db.query("SELECT COUNT(*) as c FROM users").get() as { c: number }
-        const signupAllowed = !disableSignup || existingCount.c === 0
+        const signupAllowed = existingCount.c === 0
         return jsonResponse({ signupAllowed }, 200)
       }
       if (routePath === "/auth/signup" && req.method === "POST") {
         const body = (await req.json()) as { email?: string; password?: string }
-        const disableSignup =
-          process.env.OPENFLAGS_DISABLE_SIGNUP !== "false" &&
-          process.env.OPENFLAGS_DISABLE_SIGNUP !== "0"
-        if (disableSignup) {
-          const existingCount = db.query("SELECT COUNT(*) as c FROM users").get() as { c: number }
-          if (existingCount.c > 0) {
-            return jsonResponse(
-              { error: "Signup is disabled. Ask an admin to invite you." },
-              403
-            )
-          }
+        const existingCount = db.query("SELECT COUNT(*) as c FROM users").get() as { c: number }
+        if (existingCount.c > 0) {
+          return jsonResponse({ error: "Signup is disabled. Ask an admin to invite you." }, 403)
         }
         const result = await auth.signup(db, body)
         const headers: HeadersInit = result.sessionId
@@ -156,6 +145,13 @@ const server = Bun.serve({
           { user: { id: user.id, email: user.email, role: user.role ?? "member" } },
           200
         )
+      }
+      if (routePath === "/auth/password" && req.method === "PATCH") {
+        const authResult = await auth.requireAuth(db, req)
+        if ("body" in authResult) return jsonResponse(authResult.body, authResult.status)
+        const body = (await req.json()) as { oldPassword?: string; newPassword?: string }
+        const result = await auth.changePassword(db, authResult.user.id, body)
+        return jsonResponse(result.body, result.status)
       }
 
       // ----- Global users (platform admin only) -----

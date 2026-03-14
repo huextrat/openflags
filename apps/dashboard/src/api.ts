@@ -104,6 +104,19 @@ export const api = {
     await baseFetch("/auth/logout", { method: "POST" })
   },
 
+  async changePassword(
+    oldPassword: string,
+    newPassword: string
+  ): Promise<{ error?: string; ok?: boolean }> {
+    const res = await baseFetch("/auth/password", {
+      method: "PATCH",
+      body: JSON.stringify({ oldPassword, newPassword }),
+    })
+    const data = await res.json()
+    if (!res.ok) return { error: (data as { error?: string }).error ?? "Failed to change password" }
+    return data as { ok: boolean }
+  },
+
   async getProjects(): Promise<Project[]> {
     const res = await baseFetch("/projects")
     if (!res.ok) throw new Error("Failed to fetch projects")

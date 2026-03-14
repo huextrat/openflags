@@ -62,12 +62,11 @@ Open **`http://localhost:8080`**.
 
 ### Environment variables
 
-| Variable                    | Default                 | Description                                                                 |
-| --------------------------- | ----------------------- | --------------------------------------------------------------------------- |
-| `PORT`                      | `4000`                  | Server port                                                                 |
-| `CORS_ORIGIN`               | `http://localhost:4000` | Allowed origin for cookies (set your domain in prod)                        |
-| `DATA_DIR`                  | `/app/data`             | SQLite database directory — mount a volume here                             |
-| `OPENFLAGS_DISABLE_SIGNUP`  | `true` (signup disabled) | Set to `false` or `0` to allow public signup; when `true`, only the first user or invited users can have an account |
+| Variable      | Default                 | Description                                          |
+| ------------- | ----------------------- | ---------------------------------------------------- |
+| `PORT`        | `4000`                  | Server port                                          |
+| `CORS_ORIGIN` | `http://localhost:4000` | Allowed origin for cookies (set your domain in prod) |
+| `DATA_DIR`    | `/app/data`             | SQLite database directory — mount a volume here      |
 
 _See [docs/deployment](https://openflags.dev/docs/deployment) for production tips and reverse proxy setup._
 

@@ -283,6 +283,14 @@ export default function Layout() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  asChild
+                  className="focus:bg-white/10 rounded-xl mx-1 my-1 px-3 py-2 cursor-pointer transition-colors"
+                >
+                  <Link to="/account" className="flex items-center text-[13px] font-medium">
+                    Account Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onClick={() => logout()}
                   className="text-red-400 focus:text-red-300 focus:bg-red-500/20 rounded-xl mx-1 my-1 px-3 py-2 cursor-pointer transition-colors"
                 >

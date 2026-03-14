@@ -18,7 +18,10 @@ export default function Login() {
   const [signupAllowed, setSignupAllowed] = useState(false)
 
   useEffect(() => {
-    api.getAuthConfig().then((c) => setSignupAllowed(c.signupAllowed)).catch(() => setSignupAllowed(false))
+    api
+      .getAuthConfig()
+      .then((c) => setSignupAllowed(c.signupAllowed))
+      .catch(() => setSignupAllowed(false))
   }, [])
 
   async function handleSubmit(e: React.SubmitEvent) {
