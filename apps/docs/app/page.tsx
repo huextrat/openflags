@@ -79,6 +79,25 @@ export default function HomePage() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-600/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 
       <section className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 pb-12 pt-6 sm:px-10 lg:px-12 z-10">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-6"
+        >
+          <div className="relative group overflow-hidden rounded-2xl border border-violet-500/20 bg-violet-500/5 px-4 py-2 backdrop-blur-md shadow-[0_0_20px_rgba(139,92,246,0.1)] transition-all hover:border-violet-500/40 hover:bg-violet-500/10">
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-cyan-500/10 to-violet-500/10 opacity-50 animate-shimmer" />
+            <div className="relative flex items-center justify-center gap-4 text-xs sm:text-sm font-medium">
+              <div className="flex items-center gap-2 text-violet-200">
+                <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+                <span>
+                  <strong className="text-white">OpenFlags Cloud is coming soon.</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
