@@ -1,0 +1,67 @@
+apiVersion: zeabur.com/v1
+kind: Template
+metadata:
+  name: OpenFlags
+spec:
+  description: The lightweight alternative to LaunchDarkly — built for React, Bun, and Node.js.
+  icon: https://openflags.dev/favicon.svg
+  tags:
+    - Tool
+    - Open Source
+    - Feature Flags
+  variables:
+    - key: DASHBOARD_DOMAIN
+      type: DOMAIN
+      name: Dashboard Domain
+      description: Domain for the OpenFlags admin dashboard
+    - key: SERVER_DOMAIN
+      type: DOMAIN
+      name: API Domain
+      description: Domain for the OpenFlags API server
+  services:
+    - name: openflags-server
+      template: GIT
+      icon: https://openflags.dev/favicon.svg
+      domainKey: SERVER_DOMAIN
+      spec:
+        source:
+          source: GITHUB
+          repo: 1175531218
+          branch: main
+          rootDirectory: apps/server
+        ports:
+          - id: web
+            type: HTTP
+            port: 4000
+        env:
+          PORT:
+            default: "4000"
+          CORS_ORIGIN:
+            default: "https://${DASHBOARD_DOMAIN}"
+    - name: openflags-dashboard
+      template: GIT
+      icon: https://openflags.dev/favicon.svg
+      domainKey: DASHBOARD_DOMAIN
+      spec:
+        source:
+          source: GITHUB
+          repo: 1175531218
+          branch: main
+          rootDirectory: apps/dashboard
+        ports:
+          - id: web
+            type: HTTP
+            port: 80
+        env:
+          VITE_API_URL:
+            default: "https://${SERVER_DOMAIN}"
+      dependencies:
+        - openflags-server
+  readme: |
+    # OpenFlags
+    The lightweight alternative to LaunchDarkly — built for React, Bun, and Node.js.
+
+    ## Deployment
+    This template will deploy:
+    - **OpenFlags Server**: Fastify API on Bun with SQLite storage.
+    - **OpenFlags Dashboard**: React + Vite admin UI.

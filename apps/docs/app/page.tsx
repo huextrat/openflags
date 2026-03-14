@@ -16,6 +16,22 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
+function RailwayIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4 17h-8v-1h8v1zm0-4h-8v-1h8v1zm0-4h-8v-1h8v1z" />
+    </svg>
+  )
+}
+
+function ZeaburIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 18c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6zm0-10c-2.209 0-4 1.791-4 4s1.791 4 4 4 4-1.791 4-4-1.791-4-4-4z" />
+    </svg>
+  )
+}
+
 const featurePillars = [
   {
     icon: Rocket,
@@ -197,7 +213,16 @@ export default function HomePage() {
                 rel="noopener noreferrer"
               >
                 <RailwayIcon className="h-4 w-4" />
-                Deploy on Railway
+                Railway
+              </Link>
+              <Link
+                href="https://zeabur.com/templates/NMMXD0"
+                className="inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-6 py-3.5 text-sm font-semibold text-cyan-200 transition-all hover:bg-cyan-500/20 hover:border-cyan-500/40 backdrop-blur-md shadow-[0_0_15px_rgba(6,182,212,0.1)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ZeaburIcon className="h-4 w-4" />
+                Zeabur
               </Link>
             </motion.div>
 
@@ -572,10 +597,3 @@ function CodeIcon() {
   )
 }
 
-function RailwayIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4 17h-8v-1h8v1zm0-4h-8v-1h8v1zm0-4h-8v-1h8v1z" />
-    </svg>
-  )
-}

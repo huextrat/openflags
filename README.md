@@ -24,6 +24,10 @@
   <a href="https://railway.com/deploy/IOxrOx?referralCode=Xxs5kf&utm_medium=integration&utm_source=template&utm_campaign=generic" target="_blank" rel="noopener noreferrer">
     <img src="https://railway.app/button.svg" alt="Deploy on Railway" height="30" />
   </a>
+  &nbsp;
+  <a href="https://zeabur.com/templates/NMMXD0" target="_blank" rel="noopener noreferrer">
+    <img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur" height="30" />
+  </a>
 </p>
 
 ---
