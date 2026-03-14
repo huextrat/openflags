@@ -63,5 +63,5 @@ spec:
 
     ## Deployment
     This template will deploy:
-    - **OpenFlags Server**: Fastify API on Bun with SQLite storage.
+    - **OpenFlags Server**: Bun-native API with SQLite storage.
     - **OpenFlags Dashboard**: React + Vite admin UI.

@@ -13,7 +13,7 @@ Use this file as context when working on OpenFlags. It summarizes the project, l
 ## Repository layout
 
 - **`apps/`** — Runnable applications
-  - `server` — Fastify API on **Bun**, SQLite via `bun:sqlite`, GET/POST/PATCH /flags, user targeting
+  - `server` — Bun-native API (`Bun.serve`), SQLite via `bun:sqlite`, GET/POST/PATCH /flags, user targeting
   - `dashboard` — React + Vite admin UI to list flags and toggle enabled
 - **`packages/`** — Shared libraries
   - `sdk-js` — JavaScript/TypeScript SDK (`@openflagsdev/js`): `createClient()` async, `isEnabled()` sync, `getAll()`

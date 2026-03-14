@@ -76,7 +76,7 @@ Follow the prompts to select the packages and the type of change (patch, minor, 
 
 ## Repository Structure
 
-- `apps/server`: Fastify API (Bun + SQLite).
+- `apps/server`: Bun-native API (Bun.serve + SQLite).
 - `apps/dashboard`: React + Vite admin UI.
 - `packages/sdk-js`: Core JavaScript/TypeScript SDK.
 - `packages/sdk-react`: React hooks and provider.
